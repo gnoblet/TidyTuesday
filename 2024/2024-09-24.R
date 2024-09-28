@@ -11,7 +11,7 @@ library(dplyr)
 library(tidyr)
 library(stringr)
 library(ggplot2)
-library(patchwork)
+    library(patchwork)
 library(gghighlight)
 library(ggtext)
 library(showtext)
@@ -35,34 +35,8 @@ time_longer <- time |>
   filter(gender != "all") |> 
   ungroup()
 
+
 #--- Plot 2
-
-# Number of  medals per country, per awards
-cty_medal <- cty |>
-  pivot_longer(
-    cols = c(awards_gold, awards_silver, awards_bronze),
-    names_to = "awards",
-    values_to = "n"
-  ) |> 
-  group_by(country, awards) |> 
-  summarize(n = sum(n)) |> 
-  ungroup() |>
-  # Arrange countries with biggest total
-  arrange(desc(n)) 
-
-# Keep the 10 countries with the most medals overall
-cty_top10 <- cty_medal   |>
-  group_by(country) |>
-  summarize(n = sum(n)) |>
-  ungroup() |>
-  arrange(desc(n)) |> 
-  slice(1:10)
-
-# Keep in cty_medal total only the top 10
-cty_medal <- cty_medal |>
-  filter(country %in% cty_top10$country)
-
-#--- Plot 3
 
 # Look at the share of Female contestants for the first top 10 countries
 cty_gender_top_10 <- cty |>
@@ -166,37 +140,35 @@ color = female_col,
     label_key = country,
     label_params = list(size = 4.5, color = female_col),
    line_label_type = "ggrepel_text") +
-# Add line of 1 to 1 with geomtextpath\
-  #geom_labelabline(intercept = 0, slope = 1,  label = "Gender balance frontier") +
   # Labels
-labs(
-  size = "Share of Female Contestants",
-  title = "<b><span style='color:#5F4B8BFF'>Female</span></b> Contestants Over <b>Total</b> Contestants by Country", 
-  subtitle = "<br><span style='font-size: 16pt'>The United Arab Emirates, Oman, and Laos have the highest overall share of female contestants. </span>",
-  color = "Country",
-) +
-# Add scale for breaks every 50 total contestants
-scale_x_continuous(breaks = seq(0, 500, 50)) +
-# Add scale for breaks every 10 female contestants
-scale_y_continuous(
-  breaks = seq(0, 100, 10)) +
-  theme_minimal(
-  base_size = 14,
-  base_family = "roboto"
-) +
-theme(
-  plot.margin = unit(c(15, 0, 0, 15), "pt"),
-  plot.title = element_textbox_simple(size = 20),
-  plot.title.position = "plot",
-  plot.subtitle = element_textbox_simple(size = 16),
-  axis.title = element_blank(),
-  axis.text = element_text(size = 14),
-  legend.position = "bottom",
-  legend.direction = "horizontal",
-  text = element_text(
-    family = "roboto",
-    colour = "#4c4b4c"
- )
+  labs(
+    size = "Share of Female Contestants",
+    title = "<b><span style='color:#5F4B8BFF'>Female</span></b> Contestants Over <b>Total</b> Contestants by Country", 
+    subtitle = "<br><span style='font-size: 16pt'>The United Arab Emirates, Oman, and Laos have the highest overall share of female contestants. </span>",
+    color = "Country",
+  ) +
+  # Add scale for breaks every 50 total contestants
+  scale_x_continuous(breaks = seq(0, 500, 50)) +
+  # Add scale for breaks every 10 female contestants
+  scale_y_continuous(
+    breaks = seq(0, 100, 10)) +
+    theme_minimal(
+    base_size = 14,
+    base_family = "roboto"
+  ) +
+  theme(
+    plot.margin = unit(c(15, 0, 0, 15), "pt"),
+    plot.title = element_textbox_simple(size = 20),
+    plot.title.position = "plot",
+    plot.subtitle = element_textbox_simple(size = 16),
+    axis.title = element_blank(),
+    axis.text = element_text(size = 14),
+    legend.position = "bottom",
+    legend.direction = "horizontal",
+    text = element_text(
+      family = "roboto",
+      colour = "#4c4b4c"
+  )
 ) 
 
 
@@ -215,5 +187,5 @@ patchwork <- p1 / p2  + plot_annotation(
    )
   )
 )
-ggsave("2024/2024-09-24.svg", plot = patchwork, width = 28, height = 30, units = "cm")
+ggsave("2024/2024-09-24.png", plot = patchwork, width = 28, height = 30, units = "cm")
 
