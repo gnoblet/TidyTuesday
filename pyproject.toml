@@ -3,7 +3,7 @@ authors = [{name = "gnoblet", email = "gnoblet@zaclys.net"}]
 dependencies = []
 description = "Add a short description here"
 name = "Python"
-requires-python = ">= 3.11"
+requires-python = "== 3.10.15"
 version = "0.1.0"
 
 [build-system]
@@ -21,6 +21,8 @@ python = { path = ".", editable = true }
 
 [tool.pixi.dependencies]
 ipykernel = ">=6.29.5,<7"
-python = ">=3.13.0,<3.14"
+python = "==3.10.15"
 pandas = ">=2.2.3,<3"
 geopandas = ">=1.0.1,<2"
+pip = ">=24.3.1,<25"
+altair = ">=5.4.1,<6"
