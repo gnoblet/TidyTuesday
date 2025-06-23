@@ -1,0 +1,75 @@
+---
+title: "{{TITLE}}"
+subtitle: "TidyTuesday {{DATE}}"
+date: "{{DATE}}"
+author: "gnoblet"
+categories: [{{LANGUAGE}}, {{CATEGORIES}}]
+image: "../{{LANGUAGE_UPPER}}/{{DATE}}/{{IMAGE_FILE}}"
+---
+
+## Overview
+
+This week's TidyTuesday focused on [DATASET_DESCRIPTION]. I explored [KEY_INSIGHTS] using {{LANGUAGE}} to [VISUALIZATION_APPROACH].
+
+## Dataset
+
+```{{{LANGUAGE_CODE}}}
+#| label: load-data
+#| message: false
+#| warning: false
+
+# Load required libraries
+{{LIBRARY_IMPORTS}}
+
+# Load the data
+{{DATA_LOADING}}
+```
+
+### Data Structure
+
+```{{{LANGUAGE_CODE}}}
+#| label: explore-data
+
+# Examine the dataset
+{{DATA_EXPLORATION}}
+```
+
+## Analysis
+
+### Data Preparation
+
+```{{{LANGUAGE_CODE}}}
+#| label: prep-data
+
+# Clean and prepare the data
+{{DATA_PREPARATION}}
+```
+
+## Visualization
+
+```{{{LANGUAGE_CODE}}}
+#| label: main-plot
+#| fig-width: 12
+#| fig-height: 8
+#| warning: false
+
+# Create the main visualization
+{{MAIN_VISUALIZATION}}
+```
+
+## Technical Notes
+
+- **Data Source**: [TidyTuesday GitHub Repository](https://github.com/rfordatascience/tidytuesday)
+- **Analysis Date**: {{DATE}}
+- **Tools Used**: {{TOOLS_USED}}
+- **Key Libraries**: {{KEY_LIBRARIES}}
+
+## Viz
+
+![](../{{LANGUAGE_UPPER}}/{{DATE}}/{{IMAGE_FILE}})
+
+## Next Steps
+
+- [POTENTIAL_IMPROVEMENTS]
+- [FUTURE_ANALYSIS_IDEAS]
+- [DATA_QUALITY_NOTES]

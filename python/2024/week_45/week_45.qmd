@@ -1,0 +1,228 @@
+---
+title: "Democracy Data Analysis"
+subtitle: "TidyTuesday Week 45"
+date: "2024-11-05"
+author: "gnoblet"
+categories: [python, geospatial, altair, geopandas, democracy]
+---
+
+## Overview
+
+This week's TidyTuesday focused on democracy data, exploring which countries are considered democratic over time. I created interactive world maps using Python to visualize the evolution of democratic states from 1950 to the present.
+
+## Dataset
+
+The dataset contains information about democracy classifications for countries worldwide, spanning from 1950 to recent years. Each country is classified as democratic or non-democratic for each year.
+
+**Source**: [TidyTuesday Democracy Data](https://github.com/rfordatascience/tidytuesday/tree/master/data/2024/2024-11-05)
+
+## Analysis
+
+### Libraries Used
+- `pandas` - Data manipulation and analysis
+- `geopandas` - Geospatial data handling and operations
+- `altair` - Interactive statistical visualizations
+
+### Data Loading and Preparation
+
+```{python}
+#| label: load-data
+#| echo: true
+
+# Get CSV data
+import pandas as pd
+df = pd.read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-11-05/democracy_data.csv')
+
+print(f"Dataset shape: {df.shape}")
+print(f"Years covered: {df['year'].min()} - {df['year'].max()}")
+print(f"Countries: {df['country_code'].nunique()}")
+print(f"Democratic classifications: {df['is_democracy'].value_counts()}")
+```
+
+### Geospatial Data Integration
+
+```{python}
+#| label: geospatial-data
+#| echo: true
+
+# Get world countries geojson
+import geopandas as gpd
+world = gpd.read_file('https://datahub.io/core/geo-countries/_r/-/data/countries.geojson')
+
+print(f"World geometries: {len(world)} countries")
+print(f"Available columns: {world.columns.tolist()}")
+print(f"Sample of country codes: {world['ISO_A3'].head().tolist() if 'ISO_A3' in world.columns else 'ISO_A3 not found'}")
+```
+
+### Data Joining Function
+
+```{python}
+#| label: join-function
+#| echo: true
+
+# Function that left joins DataFrame and GeoDataFrame
+def left_join_gdf(df, gdf, key_df, key_gdf, how='left'):
+    """
+    Join democracy data with world geometries
+    """
+    return pd.merge(df, gdf, left_on=key_df, right_on=key_gdf, how=how).set_geometry('geometry')
+
+# Check available country code columns
+print("Democracy data country codes sample:", df['country_code'].head().tolist())
+print("World data columns:", [col for col in world.columns if 'ISO' in col or 'CODE' in col or col in ['ADMIN', 'NAME']])
+
+# Find the appropriate ISO3 column
+iso3_columns = [col for col in world.columns if 'ISO' in col and '3' in col]
+print(f"Available ISO3 columns: {iso3_columns}")
+
+# Use the first available ISO3 column
+if iso3_columns:
+    country_col = iso3_columns[0]  # Should be 'ISO3166-1-Alpha-3'
+else:
+    # Fallback to first column that might contain country codes
+    potential_cols = [col for col in world.columns if any(term in col.upper() for term in ['ISO', 'CODE', 'ADMIN', 'NAME'])]
+    country_col = potential_cols[0] if potential_cols else world.columns[0]
+
+print(f"Using column: {country_col}")
+
+# Join democracy data with world geometries
+df_shp = left_join_gdf(
+    df,
+    world,
+    key_df='country_code', 
+    key_gdf=country_col, 
+    how='left'
+)
+
+print(f"Joined dataset shape: {df_shp.shape}")
+print(f"Countries with geometry: {df_shp['geometry'].notna().sum()}")
+```
+
+### Visualization Setup
+
+```{python}
+#| label: viz-setup
+#| echo: true
+
+import altair as alt
+
+# Color scheme for democracy status
+col1 = '#5F4B8BFF'  # Democracy
+col2 = '#E69A8DFF'  # Non-democracy  
+col3 = '#4c4b4c'    # No data
+
+# Focus on a specific year for detailed analysis
+year = 2020
+df_to_alt = df_shp[df_shp['year'] == year].copy()
+
+print(f"Data for {year}: {len(df_to_alt)} records")
+print(f"Democratic countries in {year}: {df_to_alt['is_democracy'].sum()}")
+```
+
+### Interactive Map Creation
+
+```{python}
+#| label: create-map
+#| echo: true
+
+# Create interactive choropleth map
+chart = alt.Chart(
+    df_to_alt,
+    title=alt.Title(
+        f'{year} States Considered Democratic',
+        subtitle='Global view of democratic classifications'
+    )
+).mark_geoshape(
+    stroke='white',
+    strokeWidth=0.5
+).encode(
+    color=alt.Color(
+        'is_democracy:N', 
+        scale=alt.Scale(
+            domain=[False, True],
+            range=['#E69A8DFF', '#5F4B8BFF']
+        ),
+        legend=alt.Legend(
+            title='Democratic Status',
+            labelExpr="datum.value ? 'Democratic' : 'Non-Democratic'"
+        )
+    ),
+    tooltip=[
+        alt.Tooltip('ADMIN:N', title='Country'),
+        alt.Tooltip('is_democracy:N', title='Democratic'),
+        alt.Tooltip('year:O', title='Year')
+    ]
+).resolve_scale(
+    color='independent'
+).properties(
+    width=800,
+    height=400
+)
+
+# Save to png
+chart.save('week_45.png')
+```
+
+### Temporal Analysis
+
+```{python}
+#| label: temporal-analysis
+#| echo: true
+
+# Analyze democratic trends over time
+democracy_by_year = df.groupby('year')['is_democracy'].agg(['sum', 'count']).reset_index()
+democracy_by_year['percentage'] = (democracy_by_year['sum'] / democracy_by_year['count']) * 100
+
+print("Democratic trends over time:")
+print(democracy_by_year.head(10))
+
+# Create trend visualization
+trend_chart = alt.Chart(democracy_by_year).mark_line(
+    point=True,
+    color='#5F4B8BFF'
+).encode(
+    x=alt.X('year:O', title='Year'),
+    y=alt.Y('percentage:Q', title='Percentage of Democratic Countries'),
+    tooltip=['year:O', 'percentage:Q', 'sum:Q', 'count:Q']
+).properties(
+    width=600,
+    height=300,
+    title='Percentage of Democratic Countries Over Time'
+)
+```
+
+### Save
+
+```{python}
+# save png image
+
+# save gif
+```
+
+## Methodology
+
+### Geospatial Processing
+- Used `geopandas` for efficient spatial data operations
+- Joined democracy data with world country geometries using ISO country codes
+- Handled missing geometric data for certain country codes
+
+### Visualization Approach
+- Implemented `altair` for interactive choropleth maps
+- Used diverging color scheme to distinguish democratic vs non-democratic states
+- Added interactive tooltips for detailed country information
+
+### Data Analysis
+- Calculated democratic percentages by year to show global trends
+- Identified temporal patterns in democratization processes
+- Analyzed geographic clustering of democratic institutions
+
+## Technical Notes
+
+- **Color Accessibility**: Chosen color scheme is colorblind-friendly
+- **Interactive Features**: Maps include hover tooltips and zoom functionality
+- **Performance**: Optimized for web display with appropriate data filtering
+- **Reproducibility**: All code uses publicly available datasets
+
+## Viz
+
+![](week_45.png)

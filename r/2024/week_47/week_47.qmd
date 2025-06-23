@@ -1,0 +1,217 @@
+---
+title: "Episode Metrics Analysis"
+subtitle: "TidyTuesday 2024-11-19"
+date: "2024-11-19"
+author: "gnoblet"
+categories: [r, ggplot2, tidyverse, time-series, text-analysis] 
+---
+
+## Overview
+
+This week's TidyTuesday explored episode metrics from a TV series, analyzing various characteristics like dialogue density, sentiment variance, and episode length over time. I created a comprehensive time series analysis using R to track how these metrics evolved across seasons.
+
+## Dataset
+
+The dataset contains episode-level metrics including:
+- Average episode length
+- Dialogue density
+- Sentiment variance
+- Unique word count
+- Question and exclamation ratios
+
+**Source**: [TidyTuesday Episode Metrics](https://github.com/rfordatascience/tidytuesday/tree/master/data/2024/2024-11-19)
+
+## Analysis
+
+### Data Preparation
+
+```{r}
+#| label: setup
+#| include: false
+
+# Setup with box modules
+box::use(
+  rio[import],
+  purrr[accumulate],
+  dyr = dplyr,
+  tyr = tidyr,
+  sgr = stringr,
+  gg = ggplot2,
+  ggt = ggtext,
+  ggh4x,
+  gghrbr = hrbrthemes
+)
+```
+
+```{r}
+#| label: load-data
+#| message: false
+
+# Get data
+df <- rio::import('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-11-19/episode_metrics.csv')
+
+# Create episode index by season and episode
+df <- df |>
+  dyr$arrange(season, episode) |>
+  dyr$mutate(n = dyr$row_number())
+
+# Variables to analyze
+vars <- c("avg_length", "dialogue_density", "sentiment_variance", 
+          "unique_words", "question_ratio", "exclamation_ratio")
+```
+
+### Data Transformation Functions
+
+```{r}
+#| label: functions
+
+# Base 100 transformation for comparing different metrics
+base_100 <- function(df, step, var, suffix = "_b100") {
+  min_step_row <- which.min(df[[step]])
+  first_col_value <- df[[var]][min_step_row]
+  new_var <- paste0(var, suffix)
+  df[[new_var]] <- df[[var]] / first_col_value * 100
+  return(df)
+}
+
+# Apply base_100 to multiple variables
+vapply_base_100 <- function(df, step, vars) {
+  for (var in vars) {
+    df <- base_100(df, step, var)
+  }
+  return(df)
+}
+
+# Main transformation function
+main <- function(df, step, vars) {
+  df <- vapply_base_100(df, step, vars)
+  vars_b100 <- paste0(vars, "_b100")
+  df <- tyr$pivot_longer(
+    df, 
+    cols = all_of(vars_b100), 
+    names_to = "var", 
+    values_to = "value"
+  ) |> 
+    dyr$select(season, episode, n, var, value)
+  return(df)
+}
+```
+
+### Data Processing
+
+```{r}
+#| label: process-data
+
+# Transform data for visualization
+df_gg <- main(df, "n", vars)
+
+# Basic statistics
+total_episodes <- nrow(df)
+total_seasons <- max(df$season)
+avg_episodes_per_season <- round(total_episodes / total_seasons, 1)
+
+cat("Dataset Overview:\n")
+cat("- Total episodes:", total_episodes, "\n")
+cat("- Total seasons:", total_seasons, "\n")
+cat("- Average episodes per season:", avg_episodes_per_season, "\n")
+```
+
+## Visualization
+
+```{r}
+#| label: plot
+#| fig-width: 14
+#| fig-height: 10
+#| warning: false
+
+# Get season break points for vertical lines
+season_breaks <- df_gg |>
+  dyr$group_by(season) |>
+  dyr$summarize(n = min(n), .groups = "drop") |>
+  dyr$pull(n)
+
+# Create the visualization
+df_gg |>
+  gg$ggplot(gg$aes(x = n, y = value)) +
+  gg$geom_line(color = "#667eea", size = 0.8) +
+  gg$geom_point(color = "#667eea", size = 0.5, alpha = 0.6) +
+  gg$scale_y_continuous(breaks = seq(0, 150, 50)) +
+  gg$facet_wrap(~var, nrow = 3, scales = "fixed", strip.position = "right") +
+  gg$geom_vline(
+    xintercept = season_breaks, 
+    linetype = "dashed", 
+    color = "#cccccc",
+    alpha = 0.7
+  ) +
+  gghrbr$theme_ipsum_rc(base_size = 12) +
+  gg$labs(
+    x = "Episode Number",
+    y = "Base-100 Index",
+    title = "Episode Metrics Evolution Over Time",
+    subtitle = "Tracking dialogue, sentiment, and linguistic patterns across seasons",
+    caption = "Data: TidyTuesday 2024-11-19 | Dashed lines indicate season breaks"
+  ) +
+  gg$theme(
+    strip.text = gg$element_text(size = 10),
+    axis.title = gg$element_text(size = 11),
+    plot.title = gg$element_text(size = 16),
+    plot.subtitle = gg$element_text(size = 12)
+  )
+```
+
+### Individual Metric Analysis
+
+```{r}
+#| label: individual-metrics
+#| fig-width: 12
+#| fig-height: 8
+
+# Look at original values for key metrics
+key_metrics <- df |>
+  dyr$select(season, episode, n, avg_length, dialogue_density, sentiment_variance) |>
+  tyr$pivot_longer(
+    cols = c(avg_length, dialogue_density, sentiment_variance),
+    names_to = "metric",
+    values_to = "value"
+  )
+
+gg$ggplot(key_metrics, gg$aes(x = n, y = value, color = metric)) +
+  gg$geom_line(size = 0.8) +
+  gg$geom_point(size = 0.5, alpha = 0.6) +
+  gg$facet_wrap(~metric, scales = "free_y", nrow = 1) +
+  gg$geom_vline(
+    xintercept = season_breaks, 
+    linetype = "dashed", 
+    color = "#cccccc",
+    alpha = 0.7
+  ) +
+  gg$scale_color_manual(values = c("#667eea", "#764ba2", "#e74c3c")) +
+  gghrbr$theme_ipsum_rc(base_size = 12) +
+  gg$labs(
+    x = "Episode Number",
+    y = "Original Values",
+    title = "Key Episode Metrics in Original Scale",
+    caption = "Data: TidyTuesday 2024-11-19"
+  ) +
+  gg$theme(
+    legend.position = "none",
+    strip.text = gg$element_text(size = 10)
+  )
+```
+
+## Save
+
+```{r}
+gg$ggsave('week_47.png')
+```
+
+## Technical Notes
+
+- **Base-100 Normalization**: Converts all metrics to a common scale for comparison
+- **Modular Programming**: Used `box` package for clean code organization
+- **Faceted Visualization**: Multiple metrics displayed simultaneously
+- **Season Markers**: Vertical lines indicate season boundaries
+
+## Viz
+
+![](week_47.png)

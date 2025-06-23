@@ -1,7 +1,49 @@
+# R files
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
+*.Rproj
 
+# renv
+renv/library/
+renv/local/
+renv/cellar/
+renv/lock/
+renv/python/
+renv/sandbox/
+renv/staging/
+renv/profiles/
+
+# Python/Pixi
 .pixi/
 .pixi
+
+# Quarto
+_site/
+/.quarto/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.env
+
+# uv
+.uv_cache/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.log
