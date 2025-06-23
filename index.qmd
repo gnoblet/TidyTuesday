@@ -1,6 +1,6 @@
 ---
 title: "Gallery"
-subtitle: "All TidyTuesday viz in one gallery, organized by year"
+subtitle: "All TidyTuesday viz in one gallery, broken down by year"
 format: 
   html:
     page-layout: full
@@ -107,6 +107,7 @@ qmd_files <- c(
 all_metadata <- map_dfr(qmd_files, extract_metadata) %>%
   filter(!is.na(title)) %>%  # Remove any rows with missing titles
   distinct(relative_path, .keep_all = TRUE) %>%  # Remove duplicates by file path
+  mutate(year = format(sort_date, "%Y")) %>%  # Extract year for grouping
   arrange(desc(sort_date))
 ```
 
@@ -117,12 +118,19 @@ all_metadata <- map_dfr(qmd_files, extract_metadata) %>%
 if (nrow(all_metadata) == 0) {
   cat("No visualizations found.")
 } else {
-  cat("## 2024 \n\n")
-  cat(":::{.grid}\n\n")
+  # Group by year and create sections
+  years <- unique(all_metadata$year)
+  years <- years[order(years, decreasing = TRUE)]  # Most recent first
   
-  # Loop through each project
-  for (i in 1:nrow(all_metadata)) {
-    row <- all_metadata[i, ]
+  for (current_year in years) {
+    year_data <- all_metadata %>% filter(year == current_year)
+    
+    cat("## ", current_year, " \n\n")
+    cat(":::{.grid}\n\n")
+    
+    # Loop through each project in this year
+    for (i in 1:nrow(year_data)) {
+      row <- year_data[i, ]
     
     cat(":::{.g-col-4}\n")
     
@@ -174,13 +182,14 @@ if (nrow(all_metadata) == 0) {
       cat(row$language, "\n")
     }
     
-    # Close card container
-    cat('</div>\n')
+      # Close card container
+      cat('</div>\n')
+      
+      cat(":::\n\n")
+    }
     
-    cat(":::\n\n")
+    cat(":::\n\n")  # Close grid for this year
   }
-  
-  cat(":::\n\n")
 }
 ```
 
