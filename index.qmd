@@ -142,25 +142,28 @@ if (nrow(all_metadata) == 0) {
     qmd_basename <- tools::file_path_sans_ext(basename(row$relative_path))
     image_path <- file.path(qmd_dir, paste0(qmd_basename, ".png"))
     
+    # Convert .qmd path to .html path for links
+    html_path <- gsub("\\.qmd$", ".html", row$relative_path)
+    
     # Also check absolute path to be sure
     abs_image_path <- file.path(getwd(), image_path)
     
     if (file.exists(image_path) || file.exists(abs_image_path)) {
       # Image container with fixed size and centered content
       cat('<div style="width: 100%; height: 200px; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 1rem; background-color: #f8f9fa; border-radius: 4px;">\n')
-      cat('<a href="', row$relative_path, '">\n')
+      cat('<a href="', html_path, '">\n')
       cat('<img src="', image_path, '" style="width: 100%; height: 100%; object-fit: cover; border-radius: 0 !important;" alt="Visualization preview">\n')
       cat('</a>\n')
       cat('</div>\n\n')
     } else {
       # Fallback: create a simple placeholder div with the title
       cat('<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 200px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; text-align: center; border-radius: 4px; margin-bottom: 1rem;">\n')
-      cat('<a href="', row$relative_path, '" style="color: white; text-decoration: none;">', row$title, '</a>\n')
+      cat('<a href="', html_path, '" style="color: white; text-decoration: none;">', row$title, '</a>\n')
       cat('</div>\n\n')
     }
     
     # Title
-    cat("**[", row$title, "](", row$relative_path, ")**  \n")
+    cat("**[", row$title, "](", html_path, ")**  \n")
     
     # Week info only
     if (!is.na(row$week) && row$week != "") {
