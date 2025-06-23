@@ -4,7 +4,7 @@ A collection of visualizations for Tidy Tuesdays, built as a Quarto website with
 
 ## 🌐 Website
 
-Visit the live website: [Your GitHub Pages URL]
+Visit the live website: [here](https://gnoblet.github.io/TidyTuesday/)
 
 ## 🚀 Development Setup
 
@@ -69,8 +69,7 @@ Each generated visualization includes:
 - **Analysis**: Data preparation and key insights
 - **Visualization**: Main plots and additional analysis
 - **Technical Notes**: Tools, libraries, and methodology
-- **Files**: Links to source code and outputs
-- **Summary**: Key findings and next steps
+- **Viz**: The output viz
 
 ### Manual Creation
 
@@ -118,8 +117,6 @@ quarto preview
 
 ```
 ├── .github/workflows/    # GitHub Actions for deployment
-├── R/                   # R scripts and outputs
-├── Python/              # Python scripts and outputs
 ├── r/                   # R project pages (Quarto)
 ├── python/              # Python project pages (Quarto)
 ├── _site/               # Generated website (ignored)
@@ -135,7 +132,7 @@ quarto preview
 The website is automatically deployed to GitHub Pages when changes are pushed to the main branch. The GitHub Actions workflow:
 
 1. Sets up R with renv for package management
-2. Sets up Python with uv for fast package installation
+2. Sets up Python with uv for package management
 3. Installs system dependencies
 4. Renders the Quarto website
 5. Deploys to GitHub Pages
@@ -143,14 +140,12 @@ The website is automatically deployed to GitHub Pages when changes are pushed to
 ## 📊 Adding New Projects
 
 ### R Projects
-1. Create your analysis in `R/YYYY-MM-DD.R`
-2. Add a corresponding Quarto document in `r/YYYY-MM-DD.qmd`
-3. Update `_quarto.yml` sidebar navigation
+1. Add a corresponding Quarto document in `r/YYYY-MM-DD.qmd`
+2. Update `_quarto.yml` sidebar navigation (automated via ./new-viz-from-template.sh)
 
 ### Python Projects
-1. Create your analysis in `Python/YYYY-MM-DD.py`
-2. Add a corresponding Quarto document in `python/YYYY-MM-DD.qmd`
-3. Update `_quarto.yml` sidebar navigation
+1. Add a corresponding Quarto document in `python/YYYY-MM-DD.qmd`
+2. Update `_quarto.yml` sidebar navigation (automated via ./new-viz-from-template.sh)
 
 ## 🛠️ Package Management
 
