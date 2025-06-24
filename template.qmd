@@ -4,7 +4,7 @@ subtitle: "TidyTuesday {{DATE}}"
 date: "{{DATE}}"
 author: "gnoblet"
 categories: [{{LANGUAGE}}, {{CATEGORIES}}]
-image: "../{{LANGUAGE_UPPER}}/{{DATE}}/{{IMAGE_FILE}}"
+image: "{{IMAGE_FILE}}"
 ---
 
 ## Overview
@@ -66,7 +66,7 @@ This week's TidyTuesday focused on [DATASET_DESCRIPTION]. I explored [KEY_INSIGH
 
 ## Viz
 
-![](../{{LANGUAGE_UPPER}}/{{DATE}}/{{IMAGE_FILE}})
+![]({IMAGE_FILE})
 
 ## Next Steps
 
