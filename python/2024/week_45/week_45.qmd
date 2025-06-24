@@ -125,104 +125,161 @@ print(f"Democratic countries in {year}: {df_to_alt['is_democracy'].sum()}")
 #| label: create-map
 #| echo: true
 
-# Create interactive choropleth map
-chart = alt.Chart(
-    df_to_alt,
-    title=alt.Title(
-        f'{year} States Considered Democratic',
-        subtitle='Global view of democratic classifications'
-    )
-).mark_geoshape(
-    stroke='white',
-    strokeWidth=0.5
-).encode(
-    color=alt.Color(
-        'is_democracy:N', 
-        scale=alt.Scale(
-            domain=[False, True],
-            range=['#E69A8DFF', '#5F4B8BFF']
-        ),
-        legend=alt.Legend(
-            title='Democratic Status',
-            labelExpr="datum.value ? 'Democratic' : 'Non-Democratic'"
-        )
-    ),
-    tooltip=[
-        alt.Tooltip('ADMIN:N', title='Country'),
-        alt.Tooltip('is_democracy:N', title='Democratic'),
-        alt.Tooltip('year:O', title='Year')
-    ]
-).resolve_scale(
-    color='independent'
-).properties(
-    width=800,
-    height=400
-)
-
-# Save to png
-chart.save('week_45.png')
+# Note: The 2020 chart will be created as part of the GIF generation
+# and saved as week_45.png (the last frame)
 ```
 
-### Temporal Analysis
+### Animated GIF Creation
+
+Create individual charts for each year:
 
 ```{python}
-#| label: temporal-analysis
+#| label: create-gif
+#| echo: true
+#| output: false
+
+import os
+import imageio
+from PIL import Image
+import numpy as np
+
+# Create temporary directory for individual frames inside the current directory
+temp_dir = 'temp_frames'
+if not os.path.exists(temp_dir):
+    os.makedirs(temp_dir)
+
+# Get all available years and sort them
+years = sorted(df['year'].unique())
+print(f"Creating GIF for years: {years[0]} - {years[-1]} ({len(years)} years)")
+
+# Create individual charts for each year
+frame_paths = []
+for i, year in enumerate(years):
+    print(f"Processing year {year} ({i+1}/{len(years)})")
+    
+    # Filter data for current year
+    df_year = df_shp[df_shp['year'] == year].copy()
+    
+    # Create base map chart
+    base_chart = alt.Chart(
+        df_year,
+        title=alt.Title(
+            'States Considered Democratic',
+            fontSize=24
+        )
+    ).mark_geoshape(
+        stroke='white',
+        strokeWidth=0.5
+    ).encode(
+        color=alt.Color(
+            'is_democracy:N', 
+            scale=alt.Scale(
+                domain=[False, True],
+                range=['#E69A8DFF', '#5F4B8BFF']
+            ),
+            legend=alt.Legend(
+                title='Democratic Status',
+                labelExpr="datum.value ? 'Democratic' : 'Non-Democratic'",
+                direction='horizontal',
+                orient='bottom',
+                titleFontSize=14,
+                labelFontSize=12,
+                symbolSize=150,
+                padding=10
+            )
+        ),
+        tooltip=[
+            alt.Tooltip('ADMIN:N', title='Country'),
+            alt.Tooltip('is_democracy:N', title='Democratic'),
+            alt.Tooltip('year:O', title='Year')
+        ]
+    ).properties(
+        width=800,
+        height=400
+    )
+    
+    # Create year text overlay
+    year_text = alt.Chart(
+        alt.InlineData(values=[{'year': str(year), 'x': 780, 'y': 20}])
+    ).mark_text(
+        align='right',
+        baseline='top',
+        fontSize=36,
+        fontWeight='bold',
+        color='#333333'
+    ).encode(
+        x=alt.X('x:Q', scale=alt.Scale(domain=[0, 800])),
+        y=alt.Y('y:Q', scale=alt.Scale(domain=[0, 400])),
+        text=alt.Text('year:N')
+    )
+    
+    # Combine the map and year text, then apply configurations
+    year_chart = alt.layer(base_chart, year_text).configure_view(
+        strokeWidth=0
+    ).configure_axis(
+        grid=False
+    ).configure_axisX(
+        labels=False,
+        ticks=False,
+        domain=False
+    ).configure_axisY(
+        labels=False,
+        ticks=False,
+        domain=False
+    )
+    
+    # Save individual frame
+    frame_path = f'{temp_dir}/frame_{year}.png'
+    year_chart.save(frame_path)
+    frame_paths.append(frame_path)
+    
+    # Save the last frame (most recent year) as the main thumbnail
+    if year == years[-1]:
+        year_chart.save('week_45.png')
+        print(f"Saved {year} chart as week_45.png (thumbnail)")
+
+print(f"Created {len(frame_paths)} frames")
+```
+
+Create GIF from individual frames:
+
+```{python}
+#| label: compile-gif
 #| echo: true
 
-# Analyze democratic trends over time
-democracy_by_year = df.groupby('year')['is_democracy'].agg(['sum', 'count']).reset_index()
-democracy_by_year['percentage'] = (democracy_by_year['sum'] / democracy_by_year['count']) * 100
+# Create GIF from individual frames
+images = []
+for frame_path in frame_paths:
+    if os.path.exists(frame_path):
+        img = Image.open(frame_path)
+        images.append(img)
 
-print("Democratic trends over time:")
-print(democracy_by_year.head(10))
+# Save as GIF
+gif_path = 'week_45.gif'
+if images:
+    images[0].save(
+        gif_path,
+        save_all=True,
+        append_images=images[1:],
+        duration=500,  # 500ms per frame
+        loop=0
+    )
+    print(f"GIF saved as: {gif_path}")
+    print(f"GIF contains {len(images)} frames")
+else:
+    print("No images found to create GIF")
 
-# Create trend visualization
-trend_chart = alt.Chart(democracy_by_year).mark_line(
-    point=True,
-    color='#5F4B8BFF'
-).encode(
-    x=alt.X('year:O', title='Year'),
-    y=alt.Y('percentage:Q', title='Percentage of Democratic Countries'),
-    tooltip=['year:O', 'percentage:Q', 'sum:Q', 'count:Q']
-).properties(
-    width=600,
-    height=300,
-    title='Percentage of Democratic Countries Over Time'
-)
+# Clean up temporary frames
+import shutil
+if os.path.exists(temp_dir):
+    shutil.rmtree(temp_dir)
+    print("Cleaned up temporary frames")
 ```
-
-### Save
-
-```{python}
-# save png image
-
-# save gif
-```
-
-## Methodology
-
-### Geospatial Processing
-- Used `geopandas` for efficient spatial data operations
-- Joined democracy data with world country geometries using ISO country codes
-- Handled missing geometric data for certain country codes
-
-### Visualization Approach
-- Implemented `altair` for interactive choropleth maps
-- Used diverging color scheme to distinguish democratic vs non-democratic states
-- Added interactive tooltips for detailed country information
-
-### Data Analysis
-- Calculated democratic percentages by year to show global trends
-- Identified temporal patterns in democratization processes
-- Analyzed geographic clustering of democratic institutions
-
-## Technical Notes
-
-- **Color Accessibility**: Chosen color scheme is colorblind-friendly
-- **Interactive Features**: Maps include hover tooltips and zoom functionality
-- **Performance**: Optimized for web display with appropriate data filtering
-- **Reproducibility**: All code uses publicly available datasets
 
 ## Viz
 
+### Static Map (2020)
 ![](week_45.png)
+
+### Animated Evolution (1950-2020)
+![](week_45.gif)
