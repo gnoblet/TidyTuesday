@@ -85,6 +85,8 @@ jobs:
     - name: Install Python dependencies with uv
       run: |
         uv sync
+        echo "VIRTUAL_ENV=$PWD/.venv" >> $GITHUB_ENV
+        echo "$PWD/.venv/bin" >> $GITHUB_PATH
 
     - name: Build Quarto website
       run: |
