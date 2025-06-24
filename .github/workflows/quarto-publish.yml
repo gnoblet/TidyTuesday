@@ -80,7 +80,7 @@ jobs:
       uses: astral-sh/setup-uv@v3
       with:
         enable-cache: true
-        cache-dependency-glob: "requirements.txt"
+        cache-dependency-glob: "uv.lock"
 
     - name: Install Python dependencies with uv
       run: |
