@@ -9,7 +9,7 @@ image: "plot.svg"
 
 ## Overview
 
-This week's TidyTuesday focused on [DATASET_DESCRIPTION]. I explored [KEY_INSIGHTS] using r to [VISUALIZATION_APPROACH].
+This week's TidyTuesday focused on measles cases across the world. I explored a very minimal viz around red rashes using a global point geofacet.
 
 ## Dataset
 
