@@ -35,17 +35,9 @@ dat <- tt_load("2025-06-24")
 dat_month <- dat$cases_month
 setDT(dat_month)  
 
-# Aggregate by year 
-dat_month <- dat_month[, .(measles_clinical = sum(measles_clinical)), by = .(year, iso3)]
 ```
 
-### Data Structure
 
-```{r}
-#| label: explore-data
-
-# Examine the dataset
-```
 
 ## Analysis
 
@@ -54,7 +46,8 @@ dat_month <- dat_month[, .(measles_clinical = sum(measles_clinical)), by = .(yea
 ```{r}
 #| label: prep-data
 
-# Clean and prepare the data
+# Aggregate by year 
+dat_month <- dat_month[, .(measles_clinical = sum(measles_clinical)), by = .(year, iso3)]
 ```
 
 ## Visualization
@@ -114,7 +107,7 @@ gg$ggsave('week_25.png', g, height = 10, width = 16, dpi = 600)
 
 - **Data Source**: [TidyTuesday GitHub Repository](https://github.com/rfordatascience/tidytuesday)
 - **Analysis Date**: 2025-06-24
-- **Key Libraries**: ggplot2, data.table, geofacet; ggtext
+- **Key Libraries**: ggplot2, data.table, geofacet, ggtext
 ## Viz
 
 ![](week_25.png)
