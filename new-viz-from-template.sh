@@ -14,6 +14,8 @@ get_week_number() {
     local week=$(date -d "$date" +%V)
     # Remove leading zero if present
     week=$((10#$week))
+    # Remove as it is for the week before
+    week=$((week - 1))
     echo $week
 }
 
