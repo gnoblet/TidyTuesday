@@ -18,11 +18,13 @@ This week's TidyTuesday focused on [DATASET_DESCRIPTION]. I explored [KEY_INSIGH
 #| message: false
 #| warning: false
 
-# Load required libraries
+# Get data
+library(tidytuesdayR)
+dat <- tt_load("{{DATE}}")
+
+# Load other required libraries
 {{LIBRARY_IMPORTS}}
 
-# Load the data
-{{DATA_LOADING}}
 ```
 
 ### Data Structure
