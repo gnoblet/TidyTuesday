@@ -100,8 +100,11 @@ R -e "renv::restore()"
 uv venv .venv
 source .venv/bin/activate
 
+# if using fish instead of bash
+source .venv/bin/activate.fish
+
 # Install dependencies
-uv pip install -r requirements.txt
+uv sync
 ```
 
 #### Build Website
