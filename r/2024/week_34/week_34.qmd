@@ -4,6 +4,8 @@ subtitle: "TidyTuesday Week 34"
 date: "2024-08-20"
 author: "gnoblet"
 categories: [r, ggplot2, tidyverse, history]
+execute:
+  freeze: true  
 ---
 
 ## Overview

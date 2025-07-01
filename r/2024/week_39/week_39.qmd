@@ -4,6 +4,8 @@ subtitle: "TidyTuesday Week 39"
 date: "2024-09-24"
 author: "gnoblet"
 categories: [r, ggplot2, olympics, education, gender]
+execute:
+  freeze: true
 ---
 
 ## Overview

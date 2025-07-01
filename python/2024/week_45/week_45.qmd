@@ -4,6 +4,8 @@ subtitle: "TidyTuesday Week 45"
 date: "2024-11-05"
 author: "gnoblet"
 categories: [python, geospatial, altair, geopandas, democracy]
+execute:
+  freeze: true  
 ---
 
 ## Overview
