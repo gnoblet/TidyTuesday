@@ -3,8 +3,8 @@
     "Version": "4.4.3",
     "Repositories": [
       {
-        "Name": "CRAN",
-        "URL": "https://p3m.dev/cran/latest"
+        "Name": "P3M",
+        "URL": "https://packagemanager.posit.co/cran/__linux__/manylinux_2_28/latest"
       }
     ]
   },
