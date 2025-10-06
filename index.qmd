@@ -1,6 +1,6 @@
 ---
-title: "My TidyTuesday Gallery"
-subtitle: "Weekly data visualization challenges, organized by year"
+title: "TidyTuesday Gallery"
+subtitle: "All TidyTuesday viz in one gallery, broken down by year"
 format:
   html:
     page-layout: full
@@ -38,66 +38,66 @@ extract_metadata <- function(file_path) {
   yaml_content <- lines[(yaml_start + 1):(yaml_end - 1)]
   yaml_text <- paste(yaml_content, collapse = "\n")
 
-  tryCatch({
-    metadata <- yaml.load(yaml_text)
+  tryCatch(
+    {
+      metadata <- yaml.load(yaml_text)
 
-    # Create a single row data frame to avoid list expansion issues
-    result <- data.frame(
-      file_path = file_path,
-      relative_path = gsub("^\\./", "", file_path),
-      title = ifelse(is.null(metadata$title), "Untitled", metadata$title),
-      subtitle = ifelse(is.null(metadata$subtitle), "", metadata$subtitle),
-      date = ifelse(is.null(metadata$date), "", metadata$date),
-      author = ifelse(is.null(metadata$author), "", metadata$author),
-      image = ifelse(is.null(metadata$image), "", metadata$image),
-      stringsAsFactors = FALSE
-    )
+      # Create a single row data frame to avoid list expansion issues
+      result <- data.frame(
+        file_path = file_path,
+        relative_path = gsub("^\\./", "", file_path),
+        title = ifelse(is.null(metadata$title), "Untitled", metadata$title),
+        date = ifelse(is.null(metadata$date), "", metadata$date),
+        author = ifelse(is.null(metadata$author), "", metadata$author),
+        image = ifelse(is.null(metadata$image), "", metadata$image),
+        stringsAsFactors = FALSE
+      )
 
-    # Handle categories as a single string
-    if (!is.null(metadata$categories)) {
-      result$categories_list <- list(metadata$categories)
-    } else {
-      result$categories_list <- list(character(0))
-    }
-
-    # Determine language from path
-    if (grepl("^r/", result$relative_path)) {
-      result$language <- "R"
-    } else if (grepl("^python/", result$relative_path)) {
-      result$language <- "Python"
-    } else {
-      result$language <- "Unknown"
-    }
-
-    # Extract week number from path for additional context
-    week_match <- str_extract(result$relative_path, "week[_-]?(\\d+)")
-    if (!is.na(week_match)) {
-      week_num <- str_extract(week_match, "\\d+")
-      result$week <- sprintf("%02d", as.numeric(week_num))
-      result$week_display <- paste("Week", week_num)
-    } else {
-      result$week <- "00"
-      result$week_display <- ""
-    }
-
-    # Extract date for sorting
-    if (result$date != "") {
-      result$sort_date <- as.Date(result$date)
-    } else {
-      # Try to extract date from filename
-      date_match <- str_extract(basename(file_path), "\\d{4}-\\d{2}-\\d{2}")
-      if (!is.na(date_match)) {
-        result$sort_date <- as.Date(date_match)
-        result$date <- date_match
+      # Handle categories as a single string
+      if (!is.null(metadata$categories)) {
+        result$categories_list <- list(metadata$categories)
       } else {
-        result$sort_date <- as.Date("1900-01-01")
+        result$categories_list <- list(character(0))
       }
-    }
 
-    return(result)
-  }, error = function(e) {
-    return(NULL)
-  })
+      # Determine language from path
+      if (grepl("^r/", result$relative_path)) {
+        result$language <- "R"
+      } else if (grepl("^python/", result$relative_path)) {
+        result$language <- "Python"
+      } else {
+        result$language <- "Unknown"
+      }
+
+      # Extract week number from path for additional context
+      week_match <- str_extract(result$relative_path, "week_(\\d+)")
+      if (!is.na(week_match)) {
+        week_num <- str_extract(week_match, "\\d+")
+        result$week <- paste("Week", week_num)
+      } else {
+        result$week <- ""
+      }
+
+      # Extract date for sorting
+      if (result$date != "") {
+        result$sort_date <- as.Date(result$date)
+      } else {
+        # Try to extract date from filename
+        date_match <- str_extract(basename(file_path), "\\d{4}-\\d{2}-\\d{2}")
+        if (!is.na(date_match)) {
+          result$sort_date <- as.Date(date_match)
+          result$date <- date_match
+        } else {
+          result$sort_date <- as.Date("1900-01-01")
+        }
+      }
+
+      return(result)
+    },
+    error = function(e) {
+      return(NULL)
+    }
+  )
 }
 
 # Find all .qmd files in r/ and python/ directories (recursive)
@@ -108,10 +108,10 @@ qmd_files <- c(
 
 # Extract metadata from all files
 all_metadata <- map_dfr(qmd_files, extract_metadata) %>%
-  filter(!is.na(title)) %>%  # Remove any rows with missing titles
-  distinct(relative_path, .keep_all = TRUE) %>%  # Remove duplicates by file path
-  mutate(year = format(sort_date, "%Y")) %>%  # Extract year for grouping
-  arrange(desc(sort_date), week)
+  filter(!is.na(title)) %>% # Remove any rows with missing titles
+  distinct(relative_path, .keep_all = TRUE) %>% # Remove duplicates by file path
+  mutate(year = format(sort_date, "%Y")) %>% # Extract year for grouping
+  arrange(desc(sort_date))
 ```
 
 ```{r}
@@ -119,84 +119,105 @@ all_metadata <- map_dfr(qmd_files, extract_metadata) %>%
 #| results: asis
 
 if (nrow(all_metadata) == 0) {
-  cat('<div class="empty-state">')
-  cat('<h3>No visualizations found yet</h3>')
-  cat('<p>Start creating your TidyTuesday visualizations and they will appear here!</p>')
-  cat('</div>')
+  cat("No visualizations found.")
 } else {
   # Group by year and create sections
   years <- unique(all_metadata$year)
-  years <- years[order(years, decreasing = TRUE)]  # Most recent first
+  years <- years[order(years, decreasing = TRUE)] # Most recent first
 
   for (current_year in years) {
-    year_data <- all_metadata %>%
-      filter(year == current_year) %>%
-      arrange(desc(week))
+    year_data <- all_metadata %>% filter(year == current_year)
 
-    cat("## ", current_year, "\n\n")
-    cat('<div class="gallery-grid">\n\n')
+    cat("## ", current_year, " \n\n")
+    cat(":::{.grid}\n\n")
 
     # Loop through each project in this year
     for (i in 1:nrow(year_data)) {
       row <- year_data[i, ]
 
-      # Convert .qmd path to .html path for links
-      html_path <- gsub("\\.qmd$", ".html", row$relative_path)
+      cat(":::{.g-col-4}\n")
 
-      # Image path - look for PNG with same name as qmd file in same folder
+      # Card container with padding and styling
+      cat(
+        '<div style="background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 1rem; margin-bottom: 1.5rem; transition: transform 0.2s ease, box-shadow 0.2s ease;" onmouseover="this.style.transform=\'translateY(-2px)\'; this.style.boxShadow=\'0 4px 16px rgba(0,0,0,0.15)\'" onmouseout="this.style.transform=\'translateY(0)\'; this.style.boxShadow=\'0 2px 8px rgba(0,0,0,0.1)\'">\n'
+      )
+
+      # Image and link - look for PNG with same name as qmd file in same folder
       qmd_dir <- dirname(row$relative_path)
       qmd_basename <- tools::file_path_sans_ext(basename(row$relative_path))
       image_path <- file.path(qmd_dir, paste0(qmd_basename, ".png"))
 
-      cat('<div class="gallery-item">\n')
-      cat('<a href="', html_path, '" class="gallery-link">\n')
+      # Convert .qmd path to .html path for links
+      html_path <- gsub("\\.qmd$", ".html", row$relative_path)
 
-      # Image container
-      cat('<div class="gallery-image">\n')
-      if (file.exists(image_path)) {
-        cat('<img src="', image_path, '" alt="', row$title, '" loading="lazy">\n')
+      # Also check absolute path to be sure
+      abs_image_path <- file.path(getwd(), image_path)
+
+      if (file.exists(image_path) || file.exists(abs_image_path)) {
+        # Image container with fixed size and centered content
+        cat(
+          '<div style="width: 100%; height: 200px; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 1rem; background-color: #f8f9fa; border-radius: 4px;">\n'
+        )
+        cat('<a href="', html_path, '">\n')
+        cat(
+          '<img src="',
+          image_path,
+          '" style="width: 100%; height: 100%; object-fit: cover; border-radius: 0 !important;" alt="Visualization preview">\n'
+        )
+        cat('</a>\n')
+        cat('</div>\n\n')
       } else {
-        # Fallback gradient with week number
-        cat('<div class="gallery-placeholder">\n')
-        cat('<span class="week-number">', row$week, '</span>\n')
-        cat('</div>\n')
+        # Fallback: create a simple placeholder div with the title
+        cat(
+          '<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 200px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; text-align: center; border-radius: 4px; margin-bottom: 1rem;">\n'
+        )
+        cat(
+          '<a href="',
+          html_path,
+          '" style="color: white; text-decoration: none;">',
+          row$title,
+          '</a>\n'
+        )
+        cat('</div>\n\n')
       }
-      cat('</div>\n')
 
-      # Content
-      cat('<div class="gallery-content">\n')
-      cat('<div class="gallery-meta">\n')
-      if (row$week_display != "") {
-        cat('<span class="week-text-blue"><strong>', row$week_display, '</strong></span>\n')
-      }
-      cat('</div>\n')
+      # Title
+      cat("**[", row$title, "](", html_path, ")**  \n")
 
-      cat('<h4 class="gallery-title">', row$title, '</h4>\n')
-
-      if (nchar(row$subtitle) > 0) {
-        cat('<p class="gallery-subtitle">', row$subtitle, '</p>\n')
+      # Week info only
+      if (!is.na(row$week) && row$week != "") {
+        cat("<em>", row$week, "</em>\n\n")
+      } else {
+        cat("\n")
       }
 
       # Language and categories
-      cat('<div class="gallery-tags">\n')
-      cat('<span class="language-tag language-', tolower(row$language), '">', row$language, '</span>\n')
-
       if (length(row$categories_list[[1]]) > 0) {
-        tech_cats <- row$categories_list[[1]][!row$categories_list[[1]] %in% c("r", "python", "R", "Python")]
+        # Get main tech categories (exclude language)
+        tech_cats <- row$categories_list[[1]][
+          !row$categories_list[[1]] %in% c("r", "python", "R", "Python")
+        ]
         if (length(tech_cats) > 0) {
-          for (cat_name in tech_cats[1:min(2, length(tech_cats))]) {
-            cat('<span class="tech-tag">', cat_name, '</span>\n')
-          }
+          cat(
+            row$language,
+            " • ",
+            paste(tech_cats[1:min(3, length(tech_cats))], collapse = " • "),
+            "\n"
+          )
+        } else {
+          cat(row$language, "\n")
         }
+      } else {
+        cat(row$language, "\n")
       }
+
+      # Close card container
       cat('</div>\n')
 
-      cat('</div>\n')  # Close gallery-content
-      cat('</a>\n')    # Close gallery-link
-      cat('</div>\n\n') # Close gallery-item
+      cat(":::\n\n")
     }
 
-    cat('</div>\n\n')  # Close gallery-grid for this year
+    cat(":::\n\n") # Close grid for this year
   }
 }
 ```

@@ -84,7 +84,10 @@
     font-size: 0.95rem;
     font-weight: 700;
     font-family:
-        "Inter",
+        "Futura",
+        "Avenir",
+        "Century Gothic",
+        "Trebuchet MS",
         -apple-system,
         BlinkMacSystemFont,
         "Segoe UI",
@@ -105,7 +108,10 @@
     margin: 0 0 0.5rem 0;
     color: #2c3e50;
     font-family:
-        "Inter",
+        "Futura",
+        "Avenir",
+        "Century Gothic",
+        "Trebuchet MS",
         -apple-system,
         BlinkMacSystemFont,
         "Segoe UI",
@@ -119,6 +125,7 @@
     line-height: 1.4;
     margin: 0 0 1rem 0;
     display: -webkit-box;
+    line-clamp: 2;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
@@ -137,7 +144,10 @@
     font-size: 0.8rem;
     font-weight: 600;
     font-family:
-        "Inter",
+        "Futura",
+        "Avenir",
+        "Century Gothic",
+        "Trebuchet MS",
         -apple-system,
         BlinkMacSystemFont,
         "Segoe UI",
@@ -169,7 +179,10 @@
     font-weight: 500;
     border: 1px solid #e9ecef;
     font-family:
-        "Inter",
+        "Futura",
+        "Avenir",
+        "Century Gothic",
+        "Trebuchet MS",
         -apple-system,
         BlinkMacSystemFont,
         "Segoe UI",
@@ -210,9 +223,15 @@ h2 {
     color: #2c3e50;
     margin: 3rem 0 1rem 0;
     border-bottom: 3px solid #667eea;
-    padding-bottom: 0.5rem;
+    padding: 1rem 0 0.5rem 0;
+    text-align: center;
+    background-color: rgba(102, 126, 234, 0.1);
+    border-radius: 8px;
     font-family:
-        "Inter",
+        "Futura",
+        "Avenir",
+        "Century Gothic",
+        "Trebuchet MS",
         -apple-system,
         BlinkMacSystemFont,
         "Segoe UI",
@@ -228,7 +247,10 @@ h2:first-of-type {
 /* Page title styling */
 .quarto-title .title {
     font-family:
-        "Inter",
+        "Futura",
+        "Avenir",
+        "Century Gothic",
+        "Trebuchet MS",
         -apple-system,
         BlinkMacSystemFont,
         "Segoe UI",
@@ -241,7 +263,10 @@ h2:first-of-type {
 
 .quarto-title .subtitle {
     font-family:
-        "Inter",
+        "Futura",
+        "Avenir",
+        "Century Gothic",
+        "Trebuchet MS",
         -apple-system,
         BlinkMacSystemFont,
         "Segoe UI",
