@@ -1,6 +1,7 @@
 ---
 title: "About This Project"
 subtitle: "My journey through data visualization"
+
 ---
 
 ## About TidyTuesday

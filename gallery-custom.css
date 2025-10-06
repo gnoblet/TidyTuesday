@@ -236,6 +236,7 @@ h2:first-of-type {
         sans-serif;
     font-weight: 700;
     font-size: 3rem;
+    text-align: center;
 }
 
 .quarto-title .subtitle {
@@ -249,6 +250,7 @@ h2:first-of-type {
     font-weight: 400;
     font-size: 1.2rem;
     opacity: 0.8;
+    text-align: center;
 }
 
 /* Loading animation */

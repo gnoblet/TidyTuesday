@@ -88,6 +88,7 @@ $transition-slow: all 0.3s ease;
   @include gradient-bg();
   color: white;
   padding: $spacer-xl 0;
+  text-align: center;
 
   .quarto-title .title {
     font-weight: $font-weight-bold;
@@ -102,6 +103,34 @@ $transition-slow: all 0.3s ease;
     font-weight: 400;
     line-height: $line-height-base;
   }
+}
+
+// Center all page titles (including pages without banner)
+.quarto-title {
+  text-align: center;
+
+  .title {
+    text-align: center;
+  }
+
+  .subtitle {
+    text-align: center;
+  }
+}
+
+// Additional centering for title blocks
+.title-block-header {
+  text-align: center;
+}
+
+// Center main content titles when not in banner
+.quarto-title-block .quarto-title {
+  text-align: center;
+}
+
+// Center any standalone page titles
+header#title-block-header {
+  text-align: center;
 }
 
 // Navigation
