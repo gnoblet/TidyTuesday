@@ -7,10 +7,6 @@ categories: [r, ggplot2, ggbranding, lubridate]
 image: "week_39.png"
 ---
 
-## Overview
-
-This week's TidyTuesday focused on [DATASET_DESCRIPTION]. I explored [KEY_INSIGHTS] using r to [VISUALIZATION_APPROACH].
-
 ## Dataset
 
 ```{r}
