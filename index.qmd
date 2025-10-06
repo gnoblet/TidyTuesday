@@ -1,5 +1,5 @@
 ---
-title: "TidyTuesday Gallery"
+title: "My TidyTuesday Gallery"
 subtitle: "Weekly data visualization challenges, organized by year"
 format:
   html:
