@@ -6,7 +6,7 @@ website:
   title: "TidyTuesday Visualizations"
   description: "A collection of data visualizations for Tidy Tuesday challenges"
   search: false
-   
+
   navbar:
     title: "TidyTuesday"
     left:
@@ -14,7 +14,7 @@ website:
         text: Home
       - href: about.qmd
         text: About
-    
+
     tools:
       - icon: github
         href: https://github.com/gnoblet/TidyTuesday
@@ -24,18 +24,17 @@ website:
         href: https://www.linkedin.com/in/gnoblet/
       - icon: envelope
         href: mailto:gnoblet@zaclys.net
-        
 
 format:
   html:
-    theme: 
+    theme:
       - flatly
       - styles.scss
     toc-location: right
     toc: false
     code-fold: true
     highlight-style: github
-    include-in-header: 
+    include-in-header:
       - text: |
           <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     grid:
@@ -47,3 +46,6 @@ execute:
   freeze: auto
   warning: false
   message: false
+
+jupyter:
+  kernel: tidytuesday
