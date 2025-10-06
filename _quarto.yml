@@ -3,12 +3,12 @@ project:
   output-dir: _site
 
 website:
-  title: "TidyTuesday Visualizations"
+  title: "@GNOBLET TidyTuesday Visualizations"
   description: "A collection of data visualizations for Tidy Tuesday challenges"
   search: false
 
   navbar:
-    title: "TidyTuesday"
+    title: "@GNOBLET"
     left:
       - href: index.qmd
         text: Home
