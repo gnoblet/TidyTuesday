@@ -5,7 +5,7 @@ date: "2024-11-05"
 author: "gnoblet"
 categories: [python, geospatial, altair, geopandas, democracy]
 execute:
-  freeze: true  
+  freeze: true
 ---
 
 ## Overview
@@ -30,6 +30,7 @@ The dataset contains information about democracy classifications for countries w
 ```{python}
 #| label: load-data
 #| echo: true
+#| eval: false
 
 # Get CSV data
 import pandas as pd
@@ -46,6 +47,7 @@ print(f"Democratic classifications: {df['is_democracy'].value_counts()}")
 ```{python}
 #| label: geospatial-data
 #| echo: true
+#| eval: false
 
 # Get world countries geojson
 import geopandas as gpd
@@ -61,6 +63,7 @@ print(f"Sample of country codes: {world['ISO_A3'].head().tolist() if 'ISO_A3' in
 ```{python}
 #| label: join-function
 #| echo: true
+#| eval: false
 
 # Function that left joins DataFrame and GeoDataFrame
 def left_join_gdf(df, gdf, key_df, key_gdf, how='left'):
@@ -91,8 +94,8 @@ print(f"Using column: {country_col}")
 df_shp = left_join_gdf(
     df,
     world,
-    key_df='country_code', 
-    key_gdf=country_col, 
+    key_df='country_code',
+    key_gdf=country_col,
     how='left'
 )
 
@@ -105,12 +108,13 @@ print(f"Countries with geometry: {df_shp['geometry'].notna().sum()}")
 ```{python}
 #| label: viz-setup
 #| echo: true
+#| eval: false
 
 import altair as alt
 
 # Color scheme for democracy status
 col1 = '#5F4B8BFF'  # Democracy
-col2 = '#E69A8DFF'  # Non-democracy  
+col2 = '#E69A8DFF'  # Non-democracy
 col3 = '#4c4b4c'    # No data
 
 # Focus on a specific year for detailed analysis
@@ -126,6 +130,7 @@ print(f"Democratic countries in {year}: {df_to_alt['is_democracy'].sum()}")
 ```{python}
 #| label: create-map
 #| echo: true
+#| eval: false
 
 # Note: The 2020 chart will be created as part of the GIF generation
 # and saved as week_45.png (the last frame)
@@ -139,6 +144,7 @@ Create individual charts for each year:
 #| label: create-gif
 #| echo: true
 #| output: false
+#| eval: false
 
 import os
 import imageio
@@ -158,10 +164,10 @@ print(f"Creating GIF for years: {years[0]} - {years[-1]} ({len(years)} years)")
 frame_paths = []
 for i, year in enumerate(years):
     print(f"Processing year {year} ({i+1}/{len(years)})")
-    
+
     # Filter data for current year
     df_year = df_shp[df_shp['year'] == year].copy()
-    
+
     # Create base map chart
     base_chart = alt.Chart(
         df_year,
@@ -174,7 +180,7 @@ for i, year in enumerate(years):
         strokeWidth=0.5
     ).encode(
         color=alt.Color(
-            'is_democracy:N', 
+            'is_democracy:N',
             scale=alt.Scale(
                 domain=[False, True],
                 range=['#E69A8DFF', '#5F4B8BFF']
@@ -199,7 +205,7 @@ for i, year in enumerate(years):
         width=800,
         height=400
     )
-    
+
     # Create year text overlay
     year_text = alt.Chart(
         alt.InlineData(values=[{'year': str(year), 'x': 780, 'y': 20}])
@@ -214,7 +220,7 @@ for i, year in enumerate(years):
         y=alt.Y('y:Q', scale=alt.Scale(domain=[0, 400])),
         text=alt.Text('year:N')
     )
-    
+
     # Combine the map and year text, then apply configurations
     year_chart = alt.layer(base_chart, year_text).configure_view(
         strokeWidth=0
@@ -229,12 +235,12 @@ for i, year in enumerate(years):
         ticks=False,
         domain=False
     )
-    
+
     # Save individual frame
     frame_path = f'{temp_dir}/frame_{year}.png'
     year_chart.save(frame_path)
     frame_paths.append(frame_path)
-    
+
     # Save the last frame (most recent year) as the main thumbnail
     if year == years[-1]:
         year_chart.save('week_45.png')
@@ -248,6 +254,7 @@ Create GIF from individual frames:
 ```{python}
 #| label: compile-gif
 #| echo: true
+#| eval: false
 
 # Create GIF from individual frames
 images = []
