@@ -46,6 +46,3 @@ execute:
   freeze: auto
   warning: false
   message: false
-
-jupyter:
-  kernel: tidytuesday
