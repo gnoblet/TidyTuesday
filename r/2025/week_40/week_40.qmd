@@ -9,7 +9,7 @@ image: "week_40.png"
 
 ## Overview
 
-This week's TidyTuesday focused on EuroLeague Basketball, the premier men’s club basketball competition in Europe.. I explored [KEY_INSIGHTS] using r to [VISUALIZATION_APPROACH].
+This week's TidyTuesday focused on EuroLeague Basketball, the premier men’s club basketball competition in Europe. Let's have a map!
 
 ## Data preparation
 
@@ -250,9 +250,3 @@ ggsave(
 ## Viz
 
 ![](week_40.png)
-
-## Next Steps
-
-- [POTENTIAL_IMPROVEMENTS]
-- [FUTURE_ANALYSIS_IDEAS]
-- [DATA_QUALITY_NOTES]
