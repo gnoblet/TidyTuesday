@@ -35,6 +35,7 @@ library(stringr) # for string manipulation
 library(patchwork) # to combine plots
 library(ggrepel) # to avoid overlapping text labels
 library(rnaturalearth) # for basemap
+library(rnaturalearthdata) # for basemap
 library(showtext) # for custom fonts
 library(sysfonts) # for custom fonts
 library(ggbranding) # for branding
