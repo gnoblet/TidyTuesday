@@ -178,7 +178,7 @@ scatter_inset <- ggplot(
   )
 
 # titles
-title <- "Bigger mean winner? Geographic overview of EuroLeague Basketball teams"
+title <- "Bigger means winner? Geographic overview of EuroLeague Basketball teams"
 subtitle <- branding(
   github = "gnoblet",
   bluesky = "gnoblet",
