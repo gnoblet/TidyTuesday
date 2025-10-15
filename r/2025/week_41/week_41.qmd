@@ -3,7 +3,7 @@ title: "World Food Day"
 subtitle: "TidyTuesday 2025-10-14"
 date: "2025-10-14"
 author: "gnoblet"
-categories: [r, ggplot2, tidyverse, data-viz]
+categories: [r, ggplot2, ggbump, map]
 image: "plot.svg"
 ---
 
