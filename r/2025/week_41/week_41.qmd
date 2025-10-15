@@ -1,0 +1,274 @@
+---
+title: "World Food Day"
+subtitle: "TidyTuesday 2025-10-14"
+date: "2025-10-14"
+author: "gnoblet"
+categories: [r, ggplot2, tidyverse, data-viz]
+image: "plot.svg"
+---
+
+## Overview
+
+This week's TidyTuesday focused on the FAO dataset on food security. I chose to use IPC data instead and reproduce this [graph](https://github.com/davidsjoberg/tidytuesday/blob/master/2020w17/ranking_gdpr.png) from David Sjoberg.
+
+## Dataset
+
+```{r}
+#| label: load-data
+#| message: false
+#| warning: false
+
+# Get data
+# library(tidytuesdayR)
+# dat <- tt_load("2025-10-14")
+# dat <- dat$food_security
+
+# install.packages("ripc")
+# library(ripc)
+# ipc_get_areas()
+# needs a key
+library(readr)
+library(janitor)
+library(dplyr)
+library(tidyr)
+library(sf)
+library(rnaturalearth)
+library(scales)
+library(ggbump)
+library(ggbranding)
+library(ggplot2)
+library(ggtext)
+library(BBmisc)
+library(showtext)
+library(sysfonts)
+library(viridis)
+
+
+# get data manually downloaded
+dat <- read_csv("IPC_CH_numbers_by_country_14-10-2025.csv") |>
+  clean_names() |>
+  rowwise() |>
+  mutate(
+    phase_4plus = sum(c_across(all_of(c("phase_4", "phase_5"))), na.rm = TRUE)
+  ) |>
+  ungroup() |>
+  arrange(desc(phase_4plus)) |>
+  slice_head(n = 15)
+
+```
+
+
+## Data Preparation
+
+```{r}
+#| label: prep-data
+
+# Clean and prepare the data
+# Libraries
+
+# world sf
+world <- rnaturalearthdata::sovereignty110 |>
+  st_transform(crs = 4326)
+
+# gaza sf
+gaza <- st_read("ipc_pse.geojson") |>
+  st_union() |>
+  st_as_sf() |>
+  mutate(country = "Gaza Strip", geometry = x) |>
+  left_join(dat |> filter(country == "Gaza Strip"))
+
+# wold_ipc
+world_ipc <- dat |>
+  filter(country != "Gaza Strip") |>
+  left_join(world, by = c("country" = "sovereignt")) |>
+  bind_rows(gaza) |>
+  mutate(
+    country = ifelse(country == "Central African Republic", "CAR", country)
+  ) |>
+  st_as_sf()
+
+
+# centroids (point on surface is safer for multipolygons)
+# add parameters for sigmoids
+ranking <- world_ipc |>
+  st_point_on_surface() |>
+  st_coordinates() |>
+  as_tibble() |>
+  bind_cols(
+    tibble(country = world_ipc$country, ipc_num = world_ipc$phase_4plus)
+  ) |>
+  mutate(
+    rank_val = rank(ipc_num, ties.method = "first"),
+    fine_cap = normalize(
+      rank_val,
+      range = c(-15, 75),
+      method = "range"
+    ),
+    xend = 95,
+    x_axis_start = xend + 2,
+    fine_cap_x = normalize(
+      ipc_num,
+      range = c(first(x_axis_start), 120),
+      method = "range"
+    ),
+    # x_axis_end = fine_cap_x + 10,
+    label = scales::label_number(accuracy = 0.1, scale_cut = cut_short_scale())(
+      ipc_num
+    )
+  )
+```
+
+## Plot 
+```{r}
+showtext_auto()
+showtext_opts(dpi = 600)
+font_add_google("Fira Sans", "fira_sans")
+
+base_font <- "fira_sans"
+
+title <- "The 15 Countries with the Largest Number of People Experiencing Severe Food Insecurity"
+
+caption_text <- "The chart combines the latest Integrated Food Security Phase Classification (IPC) and Cadre Harmonisé (CH) analyses of acute food insecurity, covering both current and projected conditions across 31 countries (15 IPC, 16 CH). The ranking is based on the number of people found in IPC/CH Phase 4 (Emergency) and Phase 5 (Catastrophe/Famine)."
+
+brand <- branding(
+  github = "gnoblet",
+  bluesky = "gnoblet.bsky.social",
+  website = "guillaume-noblet.com",
+  text_size = "13pt",
+  icon_size = "13pt",
+  text_color = "white",
+  icon_color = viridis::plasma(1),
+  line_spacing = 2L,
+  text_position = "after",
+  additional_text = "Source: ipcinfo.org. Data downloaded on October 13, 2025.\nAnalyses older than 3 months are not included.",
+  additional_text_size = "10pt",
+  additional_text_color = "white",
+  text_family = base_font
+)
+
+# ggplot
+g <- ggplot() +
+  geom_sf(
+    data = world,
+    size = .3,
+    fill = "transparent",
+    color = "gray17"
+  ) +
+  # Limit coordinates
+  coord_sf(
+    xlim = c(-95, 130),
+    ylim = c(-20, 85),
+    expand = FALSE
+  ) +
+  # Sigmoid from country to start of barchart
+  geom_sigmoid(
+    data = ranking,
+    aes(
+      x = X,
+      y = Y,
+      xend = 95,
+      yend = fine_cap,
+      group = country,
+      color = fine_cap
+    ),
+    alpha = .6,
+    smooth = 12,
+    size = 0.8
+  ) +
+  # Line from xstart to value
+  geom_segment(
+    data = ranking,
+    aes(
+      x = x_axis_start,
+      y = fine_cap,
+      xend = fine_cap_x + 2,
+      yend = fine_cap,
+      color = fine_cap
+    ),
+    alpha = .6,
+    size = 1,
+    lineend = "round"
+  ) +
+  # dot on centroid of country in map
+  geom_point(data = ranking, aes(x = X, y = Y, color = fine_cap), size = 2) +
+  # Country text
+  geom_text(
+    data = ranking,
+    aes(
+      x = x_axis_start - 2,
+      y = fine_cap + 0.8,
+      label = country,
+      color = fine_cap
+    ),
+    hjust = 1,
+    size = 4,
+    nudge_y = .5
+  ) +
+  # Value text
+  geom_text(
+    data = ranking,
+    aes(x = fine_cap_x + 2.1, y = fine_cap, label = label, color = fine_cap),
+    hjust = 0,
+    size = 4,
+    nudge_x = 0.6
+  ) +
+  # color scales
+  scale_fill_viridis(option = "C") +
+  scale_color_viridis(option = "C") +
+  # title
+  geom_textbox(
+    aes(
+      x = -90,
+      y = 75,
+      label = title,
+    ),
+    hjust = 0,
+    size = 8,
+    color = "white",
+    box.color = NA,
+    width = unit(0.6, "npc"),
+    fill = NA
+  ) +
+  # caption
+  geom_textbox(
+    aes(
+      x = -90,
+      y = 60,
+      label = caption_text
+    ),
+    family = base_font,
+    fill = "gray10",
+    size = 4,
+    alpha = 0.6,
+    color = "white",
+    width = unit(0.40, "npc"),
+    hjust = 0,
+    vjust = 1
+  ) +
+  # branding
+  annotate(
+    "richtext",
+    x = -90,
+    y = -15,
+    label = brand,
+    fill = NA,
+    hjust = 0
+  ) +
+  theme_void(base_family = base_font) +
+  theme(
+    text = element_text(family = base_font),
+    plot.margin = margin(.5, 1, .5, .5, "cm"),
+    legend.position = "none",
+    plot.background = element_rect(fill = "black"),
+    plot.caption = element_text(color = "gray40")
+  )
+
+
+# return the plot object
+ggsave("week_41.png", plot = g, width = 12, height = 8, dpi = 600)
+```
+
+
+## Viz
+
+![](week_41.png)
