@@ -28,8 +28,8 @@ website:
 format:
   html:
     theme:
-      - flatly
-      - styles.scss
+      light: [flatly, styles.scss]
+      dark: [flatly, styles-dark.scss]
     toc-location: right
     toc: false
     code-fold: true
