@@ -26,8 +26,8 @@ website:
 format:
   html:
     theme:
-      light: [flatly]
-      dark: [flatly]
+      light: [flatly, styles.scss]
+      dark: [flatly, styles.scss]
     toc-location: right
     toc: false
     code-fold: true
