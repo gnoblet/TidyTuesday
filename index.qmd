@@ -5,7 +5,6 @@ format:
   html:
     page-layout: full
     toc: false
-    css: gallery-custom.css
 ---
 
 ```{r}
