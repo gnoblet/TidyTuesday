@@ -4,7 +4,7 @@ subtitle: "TidyTuesday 2025-10-14"
 date: "2025-10-14"
 author: "gnoblet"
 categories: [r, ggplot2, ggbump, map]
-image: "plot.svg"
+image: "week_41.png"
 ---
 
 ## Overview
