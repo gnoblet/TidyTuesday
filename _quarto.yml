@@ -12,8 +12,6 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - href: about.qmd
-        text: About
 
     tools:
       - icon: github
@@ -28,8 +26,8 @@ website:
 format:
   html:
     theme:
-      light: [flatly, styles.scss]
-      dark: [flatly, styles-dark.scss]
+      light: [flatly]
+      dark: [flatly]
     toc-location: right
     toc: false
     code-fold: true
@@ -46,3 +44,6 @@ execute:
   freeze: auto
   warning: false
   message: false
+
+resources:
+  - posts/
