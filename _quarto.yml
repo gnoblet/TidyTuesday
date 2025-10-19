@@ -16,7 +16,7 @@ website:
     tools:
       - icon: github
         href: https://github.com/gnoblet/TidyTuesday
-      - icon: twitter
+      - icon: bluesky
         href: https://bsky.app/profile/gnoblet.bsky.social
       - icon: linkedin
         href: https://www.linkedin.com/in/gnoblet/
