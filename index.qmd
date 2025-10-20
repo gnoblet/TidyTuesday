@@ -1,14 +1,12 @@
 ---
-title: "TidyTuesday Gallery"
+title: "TidyTuesday by Guillaume Noblet"
 subtitle: "All TidyTuesday viz in one gallery, broken down by year"
-format:
-  html:
-    page-layout: full
-    toc: false
+page-layout: full
+title-block-banner: false
 listing:
   contents: posts
   type: grid
   sort: date desc
   categories: false
-  fields: [image,date,categories]
+  fields: [image, date, categories]
 ---
