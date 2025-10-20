@@ -2,6 +2,8 @@
 title: "Crane Observations at Lake Hornborgasjön, Sweden (1994–2024)"
 subtitle: "TidyTuesday 2025-10-01"
 date: "2025-10-01"
+year: 2025
+l: "r"
 author: "gnoblet"
 categories: [r, ggplot2, ggbranding, lubridate]
 image: "week_39.png"

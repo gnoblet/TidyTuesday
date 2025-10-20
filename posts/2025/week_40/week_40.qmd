@@ -2,6 +2,8 @@
 title: "EuroLeague Basketball"
 subtitle: "TidyTuesday 2025-10-07"
 date: "2025-10-07"
+year: 2025
+l: "r"
 author: "gnoblet"
 categories: [r, sf, MoMAColors, ggbranding]
 image: "week_40.png"

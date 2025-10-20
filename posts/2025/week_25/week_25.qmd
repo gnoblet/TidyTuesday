@@ -2,6 +2,8 @@
 title: "Measles cases across the world"
 subtitle: "TidyTuesday 2025-06-24"
 date: "2025-06-24"
+year: 2025
+l: "r"
 author: "gnoblet"
 categories: [r, geofacet, data.table, data-viz]
 image: "week_25.png"

@@ -2,6 +2,8 @@
 title: "World Food Day"
 subtitle: "TidyTuesday 2025-10-14"
 date: "2025-10-14"
+year: 2025
+l: "r"
 author: "gnoblet"
 categories: [r, ggplot2, ggbump, map]
 image: "week_41.png"
