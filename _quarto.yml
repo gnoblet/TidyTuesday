@@ -7,29 +7,28 @@ website:
   description: "A collection of data visualizations for Tidy Tuesday challenges"
   search: false
   back-to-top-navigation: true
-  page-footer: "Please cite, it's nice! <br>---Guillaume Noblet (2025). Tidy Tuesday Gallery. https://guillaume-noblet.com/TidyTuesday"
+  page-footer: 
+    left: "Please cite, it's nice! <br>---Guillaume Noblet (2025). Tidy Tuesday Gallery. https://guillaume-noblet.com/TidyTuesday"
 
-  navbar:
-    title: "@GNOBLET"
-    left:
-      - href: index.qmd
-        text: Home
+  navbar: false
+    # title: "@GNOBLET"
+    # left:
+    #   - href: index.qmd
+    #     text: Home
 
-    tools:
-      - icon: github
-        href: https://github.com/gnoblet/TidyTuesday
-      - icon: bluesky
-        href: https://bsky.app/profile/gnoblet.bsky.social
-      - icon: linkedin
-        href: https://www.linkedin.com/in/gnoblet/
-      - icon: envelope
-        href: mailto:gnoblet@zaclys.net
+    # tools:
+    #   - icon: github
+    #     href: https://github.com/gnoblet/TidyTuesday
+    #   - icon: bluesky
+    #     href: https://bsky.app/profile/gnoblet.bsky.social
+    #   - icon: linkedin
+    #     href: https://www.linkedin.com/in/gnoblet/
+    #   - icon: envelope
+    #     href: mailto:gnoblet@zaclys.net
 
 format:
   html:
-    theme:
-      light: [flatly, styles.scss]
-      dark: [flatly, styles.scss]
+    theme: [cosmo, styles.scss]
     mainfont: "Inter"
     toc-location: right
     toc: false
@@ -37,20 +36,9 @@ format:
     highlight-style: github
     title-block-banner: false
     smooth-scroll: true
-    include-in-header:
-      - text: |
-          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-          <style>
-          #title-block-header  {
-            display: none;
-          }
-          .navbar .navbar-brand-container {
-            display: none;
-          }
-          </style>
     grid:
       sidebar-width: 250px
-      body-width: 900px
+      body-width: 700px
       margin-width: 200px
 
 execute:
