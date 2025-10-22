@@ -10,3 +10,16 @@ listing:
   categories: false
   fields: [image, date, categories]
 ---
+
+Dear wanderer, welcome to my #TidyTuesday gallery!
+
+[#TidyTuesday](https://github.com/rfordatascience/tidytuesday) goes beyond a hashtag! Run by Data Science Learning community, it curates a weekly dataset that everyone can then wrangle and visualize.
+
+You'll find here my mere attempts at contributing to the challenge!
+
+🍂 Have fun, explore, and reuse (and please cite if needed)!
+
+
+---Guillaume Noblet
+
+<br>
