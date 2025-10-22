@@ -2,6 +2,8 @@
 $web-font-path: false; // Disable Google Fonts
 
 /*-- scss:defaults --*/
+
+// Fonts
 $font-family-sans-serif: "AdwaitaSans", sans-serif;
 
 @font-face {
@@ -54,3 +56,17 @@ $font-family-sans-serif: "AdwaitaSans", sans-serif;
 
 
 /*-- scss:rules --*/
+// card effect should:
+// zoom in
+// add a shadow / glowy effect
+
+.card {
+
+    transition: transform 0.3s ease-in-out,
+        box-shadow 0.3s ease-in-out;
+
+    &:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+}
