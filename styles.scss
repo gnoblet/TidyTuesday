@@ -70,3 +70,57 @@ $font-family-sans-serif: "AdwaitaSans", sans-serif;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
 }
+
+/* append to styles.scss — CSS-only typewriter for all h1 */
+h1 {
+    display: inline-block;
+    white-space: nowrap;
+    /* keep text on one line for typing effect */
+    overflow: hidden;
+    max-width: 0;
+    /* animated to reveal text */
+    vertical-align: bottom;
+    /* avoid baseline shift with surrounding elements */
+    border-right: .12em solid rgba(255, 255, 255, 0.85);
+    /* caret */
+    animation:
+        typing 2.8s steps(40, end) 0.18s forwards,
+        blink-caret .75s step-end infinite 2.98s;
+}
+
+/* if your headings are long or you prefer wrapping, remove white-space and adjust animation strategy */
+
+/* typing animation expands max-width to reveal the text */
+@keyframes typing {
+    from {
+        max-width: 0;
+    }
+
+    to {
+        max-width: 100%;
+    }
+}
+
+/* blinking caret */
+@keyframes blink-caret {
+
+    from,
+    to {
+        border-color: transparent;
+    }
+
+    50% {
+        border-color: rgba(255, 255, 255, 0.85);
+    }
+}
+
+/* Respect user preference for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    h1 {
+        animation: none;
+        border-right: none;
+        max-width: 100%;
+        white-space: normal;
+        overflow: visible;
+    }
+}
