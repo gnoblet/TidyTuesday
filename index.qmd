@@ -1,6 +1,4 @@
 ---
-title: "TidyTuesday by Guillaume Noblet"
-subtitle: "All TidyTuesday viz in one gallery, broken down by year"
 page-layout: full
 title-block-banner: false
 listing:
@@ -10,6 +8,8 @@ listing:
   categories: false
   fields: [image, date, categories]
 ---
+
+<h1>TidyTuesday by Guillaume Noblet</h1>
 
 Dear wanderer, welcome to my #TidyTuesday gallery!
 
