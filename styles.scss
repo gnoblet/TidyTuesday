@@ -4,6 +4,11 @@ $shadow-hover: 0 4px 4px rgba(255, 255, 255, 0.65);
 
 /*-- scss:defaults --*/
 
+$body-bg: #1a1b26;
+$body-color: white;
+$success: #6074a7;
+$link: $success;
+
 // Fonts
 $font-family-sans-serif: "AdwaitaSans", sans-serif;
 
@@ -71,12 +76,24 @@ $font-family-sans-serif: "AdwaitaSans", sans-serif;
 
 :root {
     --typing-delay: 0.1s;
-    --typing-duration: 2.8s;
+    --typing-duration: 1.6s;
+    /* faster typewriter so button appears sooner */
     --caret-blink-duration: .75s;
-    --post-fade-delay: 0.15s;
-    --post-fade-duration: 300ms;
-    --listing-delay-offset: 0.12s;
+
+    /* buttons */
+    --button-fade-delay: 0s;
+    /* start immediately after typing */
+    --button-fade-duration: 600ms;
+    /* very snappy */
+
+    /* post / div */
+    --post-fade-delay: 60ms;
+    --post-fade-duration: 600ms;
+
+    /* listing */
+    --listing-delay-offset: 80ms;
 }
+
 
 
 /* append to styles.scss — CSS-only typewriter for all h1 */
@@ -92,20 +109,29 @@ $font-family-sans-serif: "AdwaitaSans", sans-serif;
         blink-caret var(--caret-blink-duration) step-end infinite calc(var(--typing-delay) + var(--typing-duration));
 }
 
-/* fade in the container after typing completes */
+/* fade in the container after typing completes (button) */
+.button-fade-in {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: contentFade var(--button-fade-duration) ease-out forwards;
+    animation-delay: calc(var(--typing-delay, 0s) + var(--typing-duration, 0s) + var(--button-fade-delay));
+}
+
+/* div fades after the button finishes */
 .div-fade-in {
     opacity: 0;
     transform: translateY(10px);
     animation: contentFade var(--post-fade-duration) ease-out forwards;
-    animation-delay: calc(var(--typing-delay) + var(--typing-duration) + var(--post-fade-delay));
+    animation-delay: calc(var(--typing-delay, 0s) + var(--typing-duration, 0s) + var(--button-fade-delay) + var(--button-fade-duration) + var(--post-fade-delay));
 }
 
+/* listing fades after button + div have finished */
 [data-type="listing"],
 .quarto-listing {
     opacity: 0;
     transform: translateY(12px);
     animation: contentFade var(--post-fade-duration, 600ms) ease-out forwards;
-    animation-delay: calc(var(--typing-delay, 0.18s) + var(--typing-duration, 2.8s) + var(--post-fade-delay, 0.15s) + var(--post-fade-duration, 300ms) + var(--listing-delay-offset));
+    animation-delay: calc(var(--typing-delay, 0s) + var(--typing-duration, 2.8s) + var(--button-fade-delay) + var(--button-fade-duration) + var(--post-fade-delay) + var(--post-fade-duration) + var(--listing-delay-offset));
 }
 
 // Functions
