@@ -11,6 +11,25 @@ listing:
 
 <h1 class="index-h1">TidyTuesday by Guillaume Noblet</h1>
 
+
+<div class="button-fade-in">
+  <a href="https://github.com/gnoblet/TidyTuesday">
+    {{< fa brands github size=2x >}}
+  </a> 
+  &nbsp; &nbsp;
+  <a href="https://bsky.app/profile/gnoblet.bsky.social">
+    {{< fa brands bluesky size=2x >}}
+  </a>
+  &nbsp; &nbsp;
+  <a href="https://www.linkedin.com/in/gnoblet/">
+    {{< fa brands linkedin size=2x >}}
+  </a>
+  &nbsp; &nbsp;
+  <a href="https://guillaume-noblet.com">
+    {{< fa solid link size=2x >}}
+  </a>
+</div>
+
 <br>
 
 <div class="div-fade-in">
@@ -26,5 +45,3 @@ listing:
   ---Guillaume Noblet
 
 </div>
-
-<br>
