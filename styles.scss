@@ -1,5 +1,6 @@
 /* custom.scss */
 $web-font-path: false; // Disable Google Fonts
+$shadow-hover: 0 4px 4px rgba(255, 255, 255, 0.65);
 
 /*-- scss:defaults --*/
 
@@ -56,9 +57,6 @@ $font-family-sans-serif: "AdwaitaSans", sans-serif;
 
 
 /*-- scss:rules --*/
-// card effect should:
-// zoom in
-// add a shadow / glowy effect
 
 .card {
 
@@ -67,28 +65,50 @@ $font-family-sans-serif: "AdwaitaSans", sans-serif;
 
     &:hover {
         transform: scale(1.05);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        box-shadow: 4px 4px 8px rgba(255, 255, 255, 0.65);
     }
 }
 
-/* append to styles.scss — CSS-only typewriter for all h1 */
-h1 {
-    display: inline-block;
-    white-space: nowrap;
-    /* keep text on one line for typing effect */
-    overflow: hidden;
-    max-width: 0;
-    /* animated to reveal text */
-    vertical-align: bottom;
-    /* avoid baseline shift with surrounding elements */
-    border-right: .12em solid rgba(255, 255, 255, 0.85);
-    /* caret */
-    animation:
-        typing 2.8s steps(40, end) 0.18s forwards,
-        blink-caret .75s step-end infinite 2.98s;
+:root {
+    --typing-delay: 0.1s;
+    --typing-duration: 2.8s;
+    --caret-blink-duration: .75s;
+    --post-fade-delay: 0.15s;
+    --post-fade-duration: 300ms;
+    --listing-delay-offset: 0.12s;
 }
 
-/* if your headings are long or you prefer wrapping, remove white-space and adjust animation strategy */
+
+/* append to styles.scss — CSS-only typewriter for all h1 */
+.index-h1 {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 0;
+    vertical-align: bottom;
+    border-right: .15em solid rgba(255, 255, 255, 0.85);
+    animation:
+        typing var(--typing-duration) steps(40, end) var(--typing-delay) forwards,
+        blink-caret var(--caret-blink-duration) step-end infinite calc(var(--typing-delay) + var(--typing-duration));
+}
+
+/* fade in the container after typing completes */
+.div-fade-in {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: contentFade var(--post-fade-duration) ease-out forwards;
+    animation-delay: calc(var(--typing-delay) + var(--typing-duration) + var(--post-fade-delay));
+}
+
+[data-type="listing"],
+.quarto-listing {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: contentFade var(--post-fade-duration, 600ms) ease-out forwards;
+    animation-delay: calc(var(--typing-delay, 0.18s) + var(--typing-duration, 2.8s) + var(--post-fade-delay, 0.15s) + var(--post-fade-duration, 300ms) + var(--listing-delay-offset));
+}
+
+// Functions
 
 /* typing animation expands max-width to reveal the text */
 @keyframes typing {
@@ -114,13 +134,15 @@ h1 {
     }
 }
 
-/* Respect user preference for reduced motion */
-@media (prefers-reduced-motion: reduce) {
-    h1 {
-        animation: none;
-        border-right: none;
-        max-width: 100%;
-        white-space: normal;
-        overflow: visible;
+
+@keyframes contentFade {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }

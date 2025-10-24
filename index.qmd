@@ -9,17 +9,22 @@ listing:
   fields: [image, date, categories]
 ---
 
-<h1>TidyTuesday by Guillaume Noblet</h1>
+<h1 class="index-h1">TidyTuesday by Guillaume Noblet</h1>
 
-Dear wanderer, welcome to my #TidyTuesday gallery!
+<br>
 
-[#TidyTuesday](https://github.com/rfordatascience/tidytuesday) goes beyond a hashtag! Run by Data Science Learning community, it curates a weekly dataset that everyone can then wrangle and visualize.
+<div class="div-fade-in">
 
-You'll find here my mere attempts at contributing to the challenge!
+  Dear wanderer, welcome to my [#TidyTuesday](https://github.com/rfordatascience/tidytuesday) gallery!
 
-🍂 Have fun, explore, and reuse (and please cite if needed)!
+  [#TidyTuesday](https://github.com/rfordatascience/tidytuesday) goes beyond a hashtag! Run by the Data Science Learning community, it curates a weekly dataset that everyone can then wrangle and visualize.
 
+  You'll find here my mere attempts at contributing to the challenge (whenever I got some time)!
 
----Guillaume Noblet
+  🍂 Have fun, explore, and reuse!
+
+  ---Guillaume Noblet
+
+</div>
 
 <br>

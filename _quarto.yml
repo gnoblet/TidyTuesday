@@ -8,8 +8,8 @@ website:
   search: false
   back-to-top-navigation: true
   page-footer: 
-    left: "Please cite, it's nice! <br>---Guillaume Noblet (2025). Tidy Tuesday Gallery. https://guillaume-noblet.com/TidyTuesday"
-
+    left: "Please cite, it's nice! <br>---Guillaume Noblet (2025). Tidy Tuesday Gallery."
+    
   navbar: false
     # title: "@GNOBLET"
     # left:
@@ -28,7 +28,7 @@ website:
 
 format:
   html:
-    theme: [cosmo, styles.scss]
+    theme: [darkly, styles.scss]
     mainfont: "Inter"
     toc-location: right
     toc: false
@@ -40,6 +40,9 @@ format:
       sidebar-width: 250px
       body-width: 700px
       margin-width: 200px
+    includes:
+      in-header: |
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.1.0/css/all.min.css">
 
 execute:
   freeze: auto
