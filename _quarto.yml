@@ -1,6 +1,9 @@
 project:
   type: website
   output-dir: _site
+  render:
+    - "*.qmd" 
+    - "!template.qmd"
 
 website:
   title: "@GNOBLET TidyTuesday Visualizations"

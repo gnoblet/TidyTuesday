@@ -6,6 +6,7 @@ year: 2024
 l: "r"
 author: "gnoblet"
 categories: [r, ggplot2, olympics, education, gender]
+image: "week_39_thumb.png"
 execute:
   freeze: true
 ---

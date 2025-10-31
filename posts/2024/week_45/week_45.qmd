@@ -6,6 +6,7 @@ year: 2024
 l: "python"
 author: "gnoblet"
 categories: [python, geospatial, altair, geopandas, democracy]
+image: "week_45_thumb.png"
 execute:
   freeze: true
 ---
