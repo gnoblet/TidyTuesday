@@ -35,66 +35,69 @@ Visit the live website: [here](https://gnoblet.github.io/TidyTuesday/)
 
 ## 📝 Creating New Visualizations
 
-### Quick Template Creation
 
-Use the included script to generate a new visualization from the template:
+Use the included script to generate a new visualization from the template in R:
 
 ```bash
-# Create a new R analysis
-./new-viz-from-template.sh 2024-12-15 r "Coffee Analysis"
+# Create a new R post from the template
+# Usage:
+#   Rscript posts/new-viz-from-template.R [-c "categories"] [-u "tools used"] [-k "key libraries"] [-f image_file] <date> <title>
+#
+# Notes:
+#  - Creates: posts/<YEAR>/week_<N>/week_<N>.qmd
+#  - Default image filename: weekNN.png (zero-padded) placed inside that week folder, e.g. posts/2025/week_01/week01.png
+#  - The script replaces placeholders in template.qmd; ensure template.qmd is present.
+#  - The script will update _quarto.yml to add the new post entry when possible.
+#  - Week number = ISO week of the date minus one (keeps existing behavior).
 
-# Create a new Python analysis  
-./new-viz-from-template.sh 2024-12-15 python "Climate Data Study"
+# Examples
+# Minimal (uses defaults and weekXX.png):
+Rscript new-viz-from-template.R 2025-01-07 "Coffee Analysis"
 
-# Example with single word title
-./new-viz-from-template.sh 2024-12-20 r "Olympics"
+# With metadata flags and explicit image name:
+Rscript new-viz-from-template.R \
+  -c "ggplot2, tidyverse" \
+  -u "R, ggplot2, tidyverse" \
+  -k "ggplot2, dplyr, tidyr" \
+  -f week01.png \
+  2025-01-07 "Coffee Analysis"
+
+# If you only want to override the image name:
+Rscript new-viz-from-template.R -f custom-plot.png 2025-01-07 "Coffee Analysis"
+
+# Quick help:
+Rscript new-viz-from-template.R -h
 ```
 
 **Arguments:**
 - `date`: Date in YYYY-MM-DD format (e.g., 2024-12-15)
-- `language`: Programming language ('r' or 'python')
 - `title`: Title for the analysis (use quotes if it contains spaces)
+- `-c "categories"`: Comma-separated categories (default: "TidyTuesday")
+- `-u "tools used"`: Comma-separated tools used (default: "R
+- `-k "key libraries"`: Comma-separated key libraries (default: "ggplot2, dplyr")
+- `-f image_file`: Filename for the main visualization image (default: weekNN.png
 
 This will create:
-- A `.qmd` file in `r/` or `python/` directory with a complete template
+- A `.qmd` file in the `posts/` directory with a complete template
 - All placeholders automatically replaced with your specified values
 - Ready-to-edit analysis structure
 
-### Template Structure
 
-Each generated visualization includes:
-
-- **Overview**: Description of the analysis and approach
-- **Dataset**: Data loading and exploration
-- **Analysis**: Data preparation and key insights
-- **Visualization**: Main plots and additional analysis
-- **Technical Notes**: Tools, libraries, and methodology
-- **Viz**: The output viz
-
-### Manual Creation
-
-You can also manually create new visualizations:
-
-1. Copy `template.qmd` to your desired location
-2. Replace all `{{PLACEHOLDER}}` values
-3. Add your analysis code
-4. Render with `quarto render filename.qmd`
-
-### Automatic Gallery Integration
+## Automatic Gallery Integration
 
 - **New analyses automatically appear** in the gallery when you render the site
 - **No manual updates needed** - the gallery scans for .qmd files dynamically
 - **Consistent formatting** across all projects
 
-### Manual Setup
+## Manual Setup
 
-#### R Environment (renv)
+### R Environment (renv)
 ```bash
 # Restore R packages
 R -e "renv::restore()"
 ```
 
-#### Python Environment (uv)
+### Python Environment (uv)
 ```bash
 # Create virtual environment
 uv venv .venv
@@ -107,7 +110,7 @@ source .venv/bin/activate.fish
 uv sync
 ```
 
-#### Build Website
+### Build Website
 ```bash
 # Render the website
 quarto render
@@ -119,15 +122,14 @@ quarto preview
 ## 📁 Project Structure
 
 ```
-├── .github/workflows/    # GitHub Actions for deployment
-├── r/                   # R project pages (Quarto)
-├── python/              # Python project pages (Quarto)
+├── .github/workflows/   # GitHub Actions for deployment
+├── posts/               # Project posts (Quarto)
 ├── _site/               # Generated website (ignored)
 ├── renv/                # R environment
 ├── .venv/               # Python virtual environment (ignored)
 ├── requirements.txt     # Python dependencies
-├── renv.lock           # R package lockfile
-└── _quarto.yml         # Quarto configuration
+├── renv.lock            # R package lockfile
+└── _quarto.yml          # Quarto configuration
 ```
 
 ## 🔄 Deployment
@@ -140,15 +142,6 @@ The website is automatically deployed to GitHub Pages when changes are pushed to
 4. Renders the Quarto website
 5. Deploys to GitHub Pages
 
-## 📊 Adding New Projects
-
-### R Projects
-1. Add a corresponding Quarto document in `r/YYYY-MM-DD.qmd`
-2. Update `_quarto.yml` sidebar navigation (automated via ./new-viz-from-template.sh)
-
-### Python Projects
-1. Add a corresponding Quarto document in `python/YYYY-MM-DD.qmd`
-2. Update `_quarto.yml` sidebar navigation (automated via ./new-viz-from-template.sh)
 
 ## 🛠️ Package Management
 
