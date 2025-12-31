@@ -21,7 +21,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      
+      R_LIBS_USER: $HOME/.rv/library:$HOME/.local/lib/R/site-library
+      R_LIBS_SITE: $HOME/.rv/library:$HOME/.local/lib/R/site-library
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -40,65 +42,69 @@ jobs:
         r-version: '4.5.2'
         use-public-rspm: true
 
-    - name: Install system dependencies for R packages
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y \
-          libcurl4-openssl-dev \
-          libssl-dev \
-          libxml2-dev \
-          libfontconfig1-dev \
-          libharfbuzz-dev \
-          libfribidi-dev \
-          libfreetype6-dev \
-          libpng-dev \
-          libtiff5-dev \
-          libjpeg-dev \
-          libgit2-dev \
-          libgdal-dev \
-          libgeos-dev \
-          libproj-dev \
-          libudunits2-dev \
-          libnode-dev \
-          libcairo2-dev \
-          libxt-dev
-
-
     # ---- rv: install and restore project library ----
     - name: Install rv (A2-ai)
       run: |
         curl -sSL https://raw.githubusercontent.com/A2-ai/rv/refs/heads/main/scripts/install.sh | bash
         if [ -f "$HOME/.bashrc" ]; then
           source "$HOME/.bashrc"
-        fi
+        fi        
+        echo "RV_HOME=$HOME/.rv" >> $GITHUB_ENV
+        # ensure PATH updated for subsequent steps
         echo "$HOME/.local/bin" >> $GITHUB_PATH
         echo "$HOME/.rv/bin" >> $GITHUB_PATH || true
-        echo "RV_HOME=$HOME/.rv" >> $GITHUB_ENV
 
     - name: rv sync (restore project library)
-      run: rv sync
+      run: |
+        rv sync
     # ------------------------------------------------
 
-    - name: Setup Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.13'
-
-    - name: Install uv
-      uses: astral-sh/setup-uv@v3
-      with:
-        enable-cache: true
-        cache-dependency-glob: "uv.lock"
-
-    - name: Install Python dependencies with uv
-      run: |
-        uv sync
-        echo "VIRTUAL_ENV=$PWD/.venv" >> $GITHUB_ENV
-        echo "$PWD/.venv/bin" >> $GITHUB_PATH
 
     - name: Build Quarto website
       run: |
+        export R_LIBS_USER="$HOME/.rv/library:$HOME/.local/lib/R/site-library"
+        export R_LIBS_SITE="$HOME/.rv/library:$HOME/.local/lib/R/site-library"
         quarto render
+
+    # - name: Install system dependencies for R packages
+    #   run: |
+    #     sudo apt-get update
+    #     sudo apt-get install -y \
+    #       libcurl4-openssl-dev \
+    #       libssl-dev \
+    #       libxml2-dev \
+    #       libfontconfig1-dev \
+    #       libharfbuzz-dev \
+    #       libfribidi-dev \
+    #       libfreetype6-dev \
+    #       libpng-dev \
+    #       libtiff5-dev \
+    #       libjpeg-dev \
+    #       libgit2-dev \
+    #       libgdal-dev \
+    #       libgeos-dev \
+    #       libproj-dev \
+    #       libudunits2-dev \
+    #       libnode-dev \
+    #       libcairo2-dev \
+    #       libxt-dev
+
+    # - name: Setup Python
+    #   uses: actions/setup-python@v5
+    #   with:
+    #     python-version: '3.13'
+
+    # - name: Install uv
+    #   uses: astral-sh/setup-uv@v3
+    #   with:
+    #     enable-cache: true
+    #     cache-dependency-glob: "uv.lock"
+
+    # - name: Install Python dependencies with uv
+    #   run: |
+    #     uv sync
+    #     echo "VIRTUAL_ENV=$PWD/.venv" >> $GITHUB_ENV
+    #     echo "$PWD/.venv/bin" >> $GITHUB_PATH
 
     - name: Upload Pages artifact
       uses: actions/upload-pages-artifact@v3
