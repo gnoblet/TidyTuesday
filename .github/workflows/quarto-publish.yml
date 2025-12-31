@@ -7,14 +7,11 @@ on:
     branches: [ main, master ]
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: "pages"
   cancel-in-progress: false
@@ -66,10 +63,18 @@ jobs:
           libcairo2-dev \
           libxt-dev
 
-    - name: Setup renv
-      uses: r-lib/actions/setup-renv@v2
-      with:
-        cache-version: 1
+
+    # ---- rv: install and restore project library ----
+    - name: Install rv (A2-ai)
+      run: |
+        curl -sSL https://raw.githubusercontent.com/A2-ai/rv/refs/heads/main/scripts/install.sh | bash
+        
+    - name: Verify rv version
+      run: rv --version
+
+    - name: rv sync (restore project library)
+      run: rv sync
+    # ------------------------------------------------
 
     - name: Setup Python
       uses: actions/setup-python@v5
