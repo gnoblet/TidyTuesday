@@ -107,7 +107,7 @@ jobs:
         echo "R_LIBS_USER=$HOME/rv/library:$HOME/.local/lib/R/site-library" >> $GITHUB_ENV
         echo "R_LIBS_SITE=$HOME/rv/library:$HOME/.local/lib/R/site-library" >> $GITHUB_ENV
 
-    # - name: Build Quarto website
+    - name: Build Quarto website
       run: |
         # export R_LIBS_USER="$HOME/.rv/library:$HOME/.local/lib/R/site-library"
         # export R_LIBS_SITE="$HOME/.rv/library:$HOME/.local/lib/R/site-library"
