@@ -4,6 +4,7 @@ project:
   render:
     - "*.qmd" 
     - "!template.qmd"
+    - "!rv/"
 
 website:
   title: "@GNOBLET TidyTuesday Visualizations"

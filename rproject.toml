@@ -1,0 +1,44 @@
+# this config was migrated from renv.lock on 2025-12-30
+[project]
+name = "/home/gnoblet/Documents/GitHub/TidyTuesday"
+r_version = "4.5"
+
+repositories = [
+    { alias = "P3M", url = "https://packagemanager.posit.co/cran/latest"}
+]
+dependencies = [
+    "ggplot2",
+    "tidyverse",
+    "stringr",
+    "dplyr",
+    "tidyr",
+    "ggtext",
+    "showtext",
+    "sysfonts",
+    "tidytuesdayR",
+    "tidygeocoder",
+    "lubridate",
+    "forcats",
+    "ggalluvial",
+    "scales",
+    "viridis",
+    "BBmisc",
+    "rnaturalearth",
+    "rnaturalearthdata",
+    "janitor",
+    "sf",
+    "tmap",
+    "readr",
+    "patchwork",
+    "colorspace",
+    "ggrepel",
+    { name = "ggbranding", git = "https://github.com/gnoblet/ggbranding", tag = "v1.0.1" },
+    { name = "MoMAColors", git = "https://github.com/BlakeRMills/MoMAColors", branch = "main" },
+    { name = "ggstream", git = "https://github.com/davidsjoberg/ggstream", branch = "master" },
+    { name = "quartose", git = "https://github.com/djnavarro/quartose", branch = "main" },
+    "rmarkdown",
+    "knitr",
+    "quarto",
+    "tidytext",
+    { name = "ggbump", git = "https://github.com/davidsjoberg/ggbump", branch = "master"}
+]
