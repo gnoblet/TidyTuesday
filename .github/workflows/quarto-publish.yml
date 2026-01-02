@@ -109,8 +109,7 @@ jobs:
 
     - name: Build Quarto website
       run: |
-        # export R_LIBS_USER="$HOME/.rv/library:$HOME/.local/lib/R/site-library"
-        # export R_LIBS_SITE="$HOME/.rv/library:$HOME/.local/lib/R/site-library"
+        quarto check
         quarto render
 
 
