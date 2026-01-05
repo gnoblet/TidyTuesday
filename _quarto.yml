@@ -35,7 +35,6 @@ format:
     mainfont: "Inter"
     toc-location: right
     toc: false
-    code-fold: true
     highlight-style: github
     title-block-banner: false
     smooth-scroll: true
