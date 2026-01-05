@@ -1,77 +1,210 @@
 ---
-title: "{{TITLE}}"
-subtitle: "TidyTuesday {{DATE}}"
-date: "{{DATE}}"
-author: "gnoblet"
+title: '{{TITLE}}'
+subtitle: 'TidyTuesday Week {{WEEK}}'
+date: '{{DATE}}'
+author: 'gnoblet'
 categories: [{{LANGUAGE}}, {{CATEGORIES}}]
-image: "{{IMAGE_FILE}}"
+image: 'week_{{WEEK}}.png'
+params:
+  date: {{DATE}}
+  week: {{WEEK}}
+  year: {{YEAR}}
 ---
 
 ## Overview
 
-This week's TidyTuesday focused on [DATASET_DESCRIPTION]. I explored [KEY_INSIGHTS] using {{LANGUAGE}} to [VISUALIZATION_APPROACH].
+```{r}
+#| echo: false
+library(rmarkdown)
+if (interactive()) {
+params <- rmarkdown::yaml_front_matter(rstudioapi::getSourceEditorContext()$path)$params
+}
+```
 
-## Dataset
+{{DESC}}
 
-```{{{LANGUAGE_CODE}}}
+::: {.callout-tip}
+  Please cite, it's nice! ---Guillaume Noblet (2025). Tidy Tuesday Gallery. https://guillaume-noblet.com/TidyTuesday
+:::
+
+## Here is the viz!
+
+![](week_{{WEEK}}.png)
+
+## Libraries and Data
+
+```{r}
 #| label: load-data
 #| message: false
 #| warning: false
 
 # Get data
 library(tidytuesdayR)
-dat <- tt_load("{{DATE}}")
+dat <- tt_load(params$date)
 
-# Load other required libraries
-{{LIBRARY_IMPORTS}}
+# Load libraries
+library(ggplot2)
+library(ggbranding)
+library(ggtext)
+library(showtext)
+library(sysfonts)
+library(scales)
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(patchwork)
+library(paletteer)
 
+# Some data wrangling
 ```
 
-### Data Structure
-
-```{{{LANGUAGE_CODE}}}
-#| label: explore-data
-
-# Examine the dataset
-{{DATA_EXPLORATION}}
-```
-
-## Analysis
-
-### Data Preparation
-
-```{{{LANGUAGE_CODE}}}
-#| label: prep-data
-
-# Clean and prepare the data
-{{DATA_PREPARATION}}
-```
-
-## Visualization
-
-```{{{LANGUAGE_CODE}}}
+```{r}
 #| label: main-plot
-#| fig-width: 12
-#| fig-height: 8
 #| warning: false
 
+# Fonts
+title_font <- 'Roboto Condensed'
+subtitle_font <- 'Roboto Condensed'
+main_font <- 'Roboto Condensed'
+branding_font: 'Roboto Condensed'
+
+# Colors
+main_color <- '#000000'
+secondary_color <- '#000000'
+bg_color <- '#FFFFFF'
+branding_text_color <- '#000000'
+branding_icon_color <- '#000000'
+branding_additional_text_color <- '#000000'
+pal <- paletteer_c('nationalparkcolors::acadia', n = 10)
+
+# Fonts
+showtext_auto()
+showtext_opts(dpi = 600)
+font_add_google(main_font, 'main_font')
+font_add_google(title_font, 'title_font')
+font_add_google(branding_font, 'branding_font')
+
+# Titles and annotations
+title <- 'My Custom Title'
+subtitle <- 'My Custom Subtitle'
+caption <- 'My Custom Caption'
+branding <- branding(
+  github = 'gnoblet',
+  bluesky = 'gnoblet.bsky.social',
+  website = 'guillaume-noblet.com',
+  text_size = '16pt',
+  icon_size = '16pt',
+  text_color = branding_text_color,
+  icon_color = branding_icon_color,
+  line_spacing = 2L,
+  text_position = 'after',
+  additional_text = NULL,
+  additional_text_size = '12pt',
+  additional_text_color = branding_additional_text_color,
+  text_family = 'branding_font'
+)
+
 # Create the main visualization
-{{MAIN_VISUALIZATION}}
+p <- ggplot() +
+  # theme
+  theme_minimal(    
+    base_size = 14,
+    base_family = 'main_font',
+    header_family = 'title_font',
+    ink = main_color,
+    accent = secondary_color,
+    paper = bg_color) + 
+    # theme() +
+    # theme_sub_plot(
+    #   margin = margin_part(t = 100, b = 60, r = 10, l = 10),
+        # background = element_rect(fill = bg_color)
+    # )
+
+
+# Combined plots
+p <- p +
+ inset_element(
+    # title
+    ggplot() +
+      geom_textbox(
+        aes(
+          label = title
+        ),
+        family = 'title_font',
+        x = 0.02,
+        y = 0.98,
+        hjust = 0,
+        fill = NA,
+        box.color = NA,
+        box.padding = unit(c(0, 0, 0, 0), 'pt'),
+        width = unit(0.65, 'npc'),
+        size = 9
+      ) +
+      # subttitle
+      geom_textbox(
+        aes(
+          label = subtitle
+        ),
+        family = 'title_font',
+        x = 0.02,
+        y = 0.95,
+        hjust = 0,
+        fill = NA,
+        box.color = NA,
+        box.padding = unit(c(0, 0, 0, 0), 'pt'),
+        width = unit(0.6, 'npc'),
+        size = 7
+      ) +
+      # branding
+      geom_textbox(
+        aes(
+          label = branding
+        ),
+        x = 0.02,
+        y = 0.02,
+        hjust = 0,
+        fill = NA,
+        box.color = NA,
+        box.padding = unit(c(0, 0, 0, 0), 'pt'),
+        width = unit(0.6, 'npc'),
+        size = 7
+      ) +
+      theme_void(),
+    left = 0,
+    right = 1,
+    bottom = 0,
+    top = 1,
+    align_to = 'full',
+  ) &
+     theme(plot.background = element_rect(fill = 'transparent'))
 ```
+  
+```{r}
+#| label: create-thumbnail
 
-## Technical Notes
+# Save plot
+ggsave(
+  paste0('week_', params$week, '.png'),
+  plot = p,
+  width = 12,
+  height = 8,
+  dpi = 600,
+  bg = bg_color
+)
 
-- **Data Source**: [TidyTuesday GitHub Repository](https://github.com/rfordatascience/tidytuesday)
-- **Analysis Date**: {{DATE}}
-- **Tools Used**: {{TOOLS_USED}}
-- **Key Libraries**: {{KEY_LIBRARIES}}
+# Convert to thumbnail
+# but keep proportions
+library(magick)
+image <- image_read(paste0('week_', params$week, '.png'))
+w <- 500
+h <- 200
 
-## Viz
+image <- image_scale(
+  image,
+  geometry = geometry_size_pixels(
+    width = 500,
+    preserve_aspect = TRUE
+))
 
-![]({IMAGE_FILE})
-
-## Next Steps
-
-- [POTENTIAL_IMPROVEMENTS]
-- [FUTURE_ANALYSIS_IDEAS]
-- [DATA_QUALITY_NOTES]
+image_write(image, paste0('week_', params$week, '_thumb.png'), format = 'png')
+```
