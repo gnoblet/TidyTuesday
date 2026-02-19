@@ -47,7 +47,7 @@ library(ggplot2)
 library(ggbranding)
 library(ggtext)
 library(showtext)
-library(sysfonts)
+library(AddFonts)
 library(scales)
 library(dplyr)
 library(stringr)
@@ -80,9 +80,9 @@ pal <- paletteer_c('nationalparkcolors::acadia', n = 10)
 # Fonts
 showtext_auto()
 showtext_opts(dpi = 600)
-font_add_google(main_font, 'main_font')
-font_add_google(title_font, 'title_font')
-font_add_google(branding_font, 'branding_font')
+add_font(main_font, 'main_font')
+add_font(title_font, 'title_font')
+add_font(branding_font, 'branding_font')
 
 # Titles and annotations
 title <- 'My Custom Title'
