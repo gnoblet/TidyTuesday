@@ -7,6 +7,8 @@ l: "r"
 author: "gnoblet"
 categories: [r, ggplot2, ggbump, map]
 image: "week_41_thumb.png"
+execute:
+  freeze: true  
 ---
 
 ## Overview

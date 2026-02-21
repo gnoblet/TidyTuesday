@@ -7,6 +7,8 @@ l: "r"
 author: "gnoblet"
 categories: [r, ggplot2, ggbranding, lubridate]
 image: "week_39_thumb.png"
+execute:
+  freeze: true  
 ---
 
 ## Dataset

@@ -7,6 +7,8 @@ l: "r"
 author: "gnoblet"
 categories: [r, geofacet, data.table, data-viz]
 image: "week_25.png"
+execute:
+  freeze: true  
 ---
 
 ## Overview
