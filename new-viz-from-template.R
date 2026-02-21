@@ -13,7 +13,14 @@ usage <- function() {
   quit(status = 1)
 }
 
-DATE <- args[1]
+if (length(args) == 0 || args[1] == "") {
+  today <- Sys.Date()
+  weekday <- as.integer(format(today, "%u")) # 1=Monday, 7=Sunday
+  days_since_tuesday <- (weekday - 2) %% 7
+  DATE <- as.character(today - days_since_tuesday)
+} else {
+  DATE <- args[1]
+}
 
 if (!grepl("^\\d{4}-\\d{2}-\\d{2}$", DATE)) {
   stop("Date must be in YYYY-MM-DD format")
