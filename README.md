@@ -4,7 +4,7 @@ A collection of visualizations for Tidy Tuesdays, built as a Quarto website with
 
 ## 🌐 Website
 
-Visit the live website: [here](https://gnoblet.github.io/TidyTuesday/)
+Visit the live website: [here](https://guillaume-noblet.com/TidyTuesday/)
 
 ## 🚀 Development Setup
 
